@@ -106,6 +106,15 @@
               >
                 {{ getAmountTag(contract.estimated_amount).tag }}
               </div>
+
+              <div
+                v-if="!contract.estimated_amount"
+                class="contract-tag"
+                :class="getAmountTag(100001).class"
+              >
+                {{ getAmountTag(100001).tag }}
+              </div>
+
               <div
                 class="contract-tag"
                 :class="getCorrespondingTag(contract.data_source).class"
@@ -326,7 +335,7 @@ export default {
       if (num > 100000) {
         return {
           tag: "Over 100k",
-          class: "bg-dark-green color-white",
+          class: "bg-yellow color-white",
         };
       } else if (num < 340000) {
         return {
@@ -336,7 +345,7 @@ export default {
       } else if (34000 <= num <= 100000) {
         return {
           tag: "$34k-$100k",
-          class: "bg-yellow dark-grey",
+          class: "bg-dark-green dark-grey",
         };
       }
 
