@@ -121,8 +121,21 @@
               </div>
             </div>
             <div class="description">
-              {{ contract.opportunity_description | truncate }}
-              <!-- display nigp codes if its phl-contracts -->
+              <div 
+                v-if="contract.data_source == 'E-Contracts'"
+              >
+                {{ contract.opportunity_description | truncate }}
+              </div>
+              <div 
+                v-if="contract.data_source == 'PHL-Contracts'"
+              >
+                <span 
+                  v-for="code in contract.nigp_codes"
+                  :key="code"
+                >
+                  {{ code }}
+                </span>
+              </div>
             </div>
             <div class="last-data">
               <br>
