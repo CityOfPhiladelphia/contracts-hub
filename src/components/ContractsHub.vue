@@ -39,36 +39,32 @@
         />
       </div>
       <div class="results-container">
-        <div class>
+        <div class="top-container">
           <div
             class="results-count"
             v-html="showNum"
           />
-        </div>
-        <div class>
-          <div
-            v-if="contracts.length > 0"
-            class="sort-by"
-          >
-            <label
-              for="sort-by"
-              aria-label="Sort By"
+        
+          <div class="sort-by-container">
+            <span> Sort by </span>
+            <div
+              v-if="contracts.length > 0"
+              class="sort-by"
             >
-              <span>Sort By</span>
-            </label>
-            <select
-              id="sort-by"
-              v-model="sort"
-              @change="sortResults()"
-            >
-              <option
-                v-for="sortByType in sortByTypes"
-                :key="sortByType"
-                :value="sortByType"
+              <select
+                id="sort-by"
+                v-model="sort"
+                @change="sortResults()"
               >
-                {{ sortByType }}
-              </option>
-            </select>
+                <option
+                  v-for="sortByType in sortByTypes"
+                  :key="sortByType"
+                  :value="sortByType"
+                >
+                  {{ sortByType }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
     
@@ -141,6 +137,20 @@
               <br>
               <b>Date posted: </b>
               <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+              <div class="see-more-link">
+                <a
+                  v-if="contract.data_source == 'E-Contracts'"
+                  :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
+                >
+                  View details in eContractPhilly
+                </a>
+                <a
+                  v-if="contract.data_source == 'PHL-Contracts'"
+                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidAck.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
+                >
+                  View details in PHL Contracts
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -407,7 +417,7 @@ export default {
 }
 
 .single-contract {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .contract-tag {
@@ -427,10 +437,20 @@ export default {
     line-height: 1.1;
 }
 
-.sort-by {
-    text-align: right;
+.top-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.sort-by-container {
+    display: flex;
+    flex-direction: row;
+
     span {
         font-weight: 700;
+        display: inline;
+        line-height: 3rem;
+        padding-right: 5px;
     }
     select {
         width: auto;
@@ -526,5 +546,10 @@ background-color: #2b5f2b;
 
 .bg-light-grey{
 background-color: #a1a1a1;
+}
+
+.see-more-link{
+  float: right;
+  text-decoration:underline;
 }
 </style>
