@@ -88,7 +88,7 @@
               class="contract-header bg-ghost-gray"
             >
               <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
-                {{ contract.opportunity_title }}
+                {{ contract.opportunity_description }}
               </a>
             </h2>
             <div class="contract-tags">
@@ -107,13 +107,13 @@
                 {{ getAmountTag(contract.estimated_amount).tag }}
               </div>
 
-              <div
+              <!-- <div
                 v-if="!contract.estimated_amount"
                 class="contract-tag"
                 :class="getAmountTag(100001).class"
               >
                 {{ getAmountTag(100001).tag }}
-              </div>
+              </div> -->
 
               <div
                 class="contract-tag"
@@ -138,12 +138,12 @@
               <div 
                 v-if="contract.data_source == 'PHL-Contracts'"
               >
-                <span 
+                <div 
                   v-for="code in contract.nigp_codes"
                   :key="code"
                 >
                   {{ code }}
-                </span>
+                </div>
               </div>
             </div>
             <div class="last-data">
@@ -189,7 +189,7 @@ import ContractFilters from "./ContractFilters.vue";
 // import VueFuse from "vue-fuse";
 
 const endpoint =
-    "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities%20limit%2010";
+    "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
 
 export default {
   name: "ContractsHub",
@@ -370,9 +370,9 @@ export default {
             class: "bg-dark-blue color-white",
           };
 
-        case "Services, supplies, and equipment (SS&E)":
+        case "Services, Supplies, and Equipment":
           return {
-            tag: "SSE",
+            tag: "SS&E",
             class: "bg-light-blue dark-gray",
           };
         case "E-Contracts":
