@@ -5,50 +5,56 @@ import ContractFilters from 'ContractFilters.vue';
     :class="{ 'in-modal': vModal }"
   >
     <div class="sidebar-filters-wrap">
-      <div class="filter-title bg-ghost-gray">
-        <span>Filter by Contract Type</span>
-        <div class="disclaimer">
-          Learn more about <a href="https://www.phila.gov/departments/procurement-department/contracts-information/types-of-contracts/">contract types.</a>
+      <div class="single-filter">
+        <div class="filter-title bg-ghost-gray">
+          <span>Filter by Contract Type</span>
+          <div class="disclaimer">
+            Learn more about <a href="https://www.phila.gov/departments/procurement-department/contracts-information/types-of-contracts/">contract types.</a>
+          </div>
+        </div>
+        <div
+          v-for="filter in contractTypeFilters"
+          :key="filter.label"
+          class="checkbox-wrap"
+        >
+          <input
+            :id="filter.label"
+            type="checkbox"
+            :value="filter.matchValue"
+            :checked="isFilterChecked(filter.matchValue, 'contracttype')"
+            @change="updateFilters('contracttype', $event)"
+          >
+          <label :for="filter.label">
+            <span>{{ filter.label }}</span>
+          </label>
         </div>
       </div>
-      <div
-        v-for="filter in contractTypeFilters"
-        :key="filter.label"
-        class="checkbox-wrap"
-      >
-        <input
-          :id="filter.label"
-          type="checkbox"
-          :value="filter.matchValue"
-          :checked="isFilterChecked(filter.matchValue, 'contracttype')"
-          @change="updateFilters('contracttype', $event)"
+      <div class="single-filter">
+        <div class="filter-title bg-ghost-gray">
+          <span>Filter by Estimated Size</span>
+        </div>
+        <div
+          v-for="filter in sizeFilters"
+          :key="filter.label"
+          class="checkbox-wrap"
         >
-        <label :for="filter.label">
-          <span>{{ filter.label }}</span>
-        </label>
+          <input
+            :id="filter.label"
+            type="checkbox"
+            :value="filter.matchValue"
+            :checked="isFilterChecked(filter.matchValue, 'size')"
+            @change="updateFilters('size', $event)"
+          >
+          <label :for="filter.label">
+            <span>{{ filter.label }}</span>
+          </label>
+        </div>
+        <div class="post-disclaimer">
+          <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opporunity falls, you can select more than one filter.
+        </div>
       </div>
-      <div class="filter-title bg-ghost-gray">
-        <span>Filter by Estimated Size</span>
-      </div>
-      <div
-        v-for="filter in sizeFilters"
-        :key="filter.label"
-        class="checkbox-wrap"
-      >
-        <input
-          :id="filter.label"
-          type="checkbox"
-          :value="filter.matchValue"
-          :checked="isFilterChecked(filter.matchValue, 'size')"
-          @change="updateFilters('size', $event)"
-        >
-        <label :for="filter.label">
-          <span>{{ filter.label }}</span>
-        </label>
-      </div>
-      <div class="post-disclaimer">
-        <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opporunity falls, you can select more than one filter.
-      </div>
+    </div>
+    <div class="single-filter">
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Solicitation Type</span>
       </div>
@@ -76,7 +82,8 @@ import ContractFilters from 'ContractFilters.vue';
           v-html="filter.sublabel"
         />
       </div>
-
+    </div>
+    <div class="single-filter">
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Competition</span>
       </div>

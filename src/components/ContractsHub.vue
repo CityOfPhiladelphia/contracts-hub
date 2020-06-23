@@ -487,8 +487,13 @@ export default {
     }
 }
 
+
+.single-filter {
+  margin-bottom: 40px;
+}
+
 .filter-title {
-    margin-top: 40px;
+    // margin-top: 40px;
     line-height: 1;
     padding: 15px 10px;
     background-color: #a1a1a1;
