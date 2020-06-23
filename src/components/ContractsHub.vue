@@ -89,12 +89,13 @@
               >
                 {{ getCorrespondingTag(contract.contract_category).tag }}
               </div>
+              
               <div
-                v-if="contract.estimated_amount"
+                v-if="contract.estimated_amount !== null"
                 class="contract-tag"
-                :class="getCorrespondingTag(contract.estimated_amount).class"
+                :class="getAmountTag(contract.estimated_amount).class"
               >
-                {{ getCorrespondingTag(contract.estimated_amount).tag }}
+                {{ getAmountTag(contract.estimated_amount).tag }}
               </div>
               <div
                 class="contract-tag"
@@ -272,6 +273,26 @@ export default {
       return;
     },
 
+    getAmountTag(num) {
+      if (num > 100000) {
+        return {
+          tag: "Over 100k",
+          class: "bg-dark-green color-white",
+        };
+      } else if (num < 340000) {
+        return {
+          tag: "Under $34k",
+          class: "bg-vibrant-blue color-white",
+        };
+      } else if (34000 <= num <= 100000) {
+        return {
+          tag: "$34k-$100k",
+          class: "bg-yellow dark-grey",
+        };
+      }
+
+    },
+
     getCorrespondingTag(tag) {
       if (tag !== "") {
         switch (tag) {
@@ -291,7 +312,7 @@ export default {
             class: "bg-dark-blue color-white",
           };
 
-        case "Services, supplies, and equipment":
+        case "Services, supplies, and equipment (SS&E)":
           return {
             tag: "SSE",
             class: "bg-light-blue dark-gray",
@@ -317,28 +338,9 @@ export default {
             tag: "OPEN TO ANYONE",
             class: "bg-mint-green dark-grey",
           };
-
-        case !isNaN(tag):
-          if (parseInt(tag, 10) > 100000) {
-            return {
-              tag: "Over 100k",
-              class: "bg-dark-green color-white",
-            };
-          } else if (parseInt(tag, 10) < 340000) {
-            return {
-              tag: "Under $34k",
-              class: "bg-vibrant-blue color-white",
-            };
-          } else if (34000 <= parseInt(tag, 10) <= 100000) {
-            return {
-              tag: "$34k-$100k",
-              class: "bg-yellow dark-grey",
-            };
-          }
-          break;
         default:
           return {
-            tag: tag,
+            tag: "$" + tag,
             class: "bg-dark-gray",
           };
         }
@@ -354,6 +356,8 @@ export default {
     width: 80rem;
     margin: 0 auto;
 }
+
+
 
 .intro-text {
     margin: 2rem 0;
@@ -462,41 +466,42 @@ export default {
 }
 
 .bg-purple {
-  background-color: purple;
+  background-color: #793d8f;
 }
 
 .bg-light-blue {
 background-color: lightblue;
 }
 .bg-dark-blue {
-background-color: darkblue;
+background-color: #0f4d90 
 }
 
 .bg-brown {
-background-color: burlywood;
+background-color: #795549;
 }
 
 .bg-orange {
-background-color: orange;
+background-color: #ff9d14;
 }
 
 .bg-mint-green{
-background-color: greenyellow;
+background-color: #c5f0b7;
+}
+
+
+.bg-vibrant-blue{
+background-color: #2176d2;
 }
 
 .bg-dark-green{
-background-color: darkgreen;
-}
-
-.bg-vibrant-blue{
-background-color: teal;
+background-color: #2b5f2b;
 }
 
 .bg-yellow{
-  background-color: yellow;
+  background-color: #f2c612;
 }
 
 .bg-light-grey{
-background-color: grey;
+background-color: #a1a1a1;
 }
 </style>
