@@ -79,8 +79,21 @@
             class="single-contract"
           >
             <!-- <h2> {{ contract.opportunity_title }} </h2> -->
-            <h2 class="contract-header bg-ghost-gray">
-              {{ contract.type_code }} contract for {{ contract.department }}
+            <h2 
+              v-if="contract.data_source == 'E-Contracts'"
+              class="contract-header bg-ghost-gray"
+            >
+              <a :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number">
+                {{ contract.type_code }} contract for {{ contract.department }}
+              </a>
+            </h2>
+            <h2 
+              v-if="contract.data_source == 'PHL-Contracts'"
+              class="contract-header bg-ghost-gray"
+            >
+              <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidAck.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
+                {{ contract.opportunity_title }}
+              </a>
             </h2>
             <div class="contract-tags">
               <div
@@ -104,11 +117,11 @@
                 {{ getCorrespondingTag(contract.data_source).tag }}
               </div>
               <div
-                v-if="contract.lbe_only"
+                
                 class="contract-tag"
-                :class="getCorrespondingTag(contract.lbe_only).class"
+                :class="getCorrespondingTag('Open to anyone').class"
               >
-                {{ getCorrespondingTag(contract.lbe_only).tag }}
+                {{ getCorrespondingTag('Open to anyone').tag }}
               </div>
             </div>
             <div class="description">
@@ -117,17 +130,17 @@
             </div>
             <div class="last-data">
               <br>
-              <b>Responses due:</b>
-              <span>{{ contract.bid_available_date }}</span>
+              <b>Responses due: </b>
+              <span>{{ contract.bid_available_date | showDate }} </span>
               <br>
-              <b>Posted by:</b>
+              <b>Posted by: </b>
               <span>{{ contract.department }}</span>
               <br>
-              <b>Number</b>
+              <b>Number: </b>
               <span>{{ contract.bid_number }}</span>
               <br>
-              <b>Date posted:</b>
-              <span>{{ contract.open_bidding_begin_date }}</span>
+              <b>Date posted: </b>
+              <span>{{ contract.open_bidding_begin_date | showDate }}</span>
             </div>
           </div>
         </div>
@@ -137,7 +150,7 @@
 </template>
 
 <script>
-// import moment from "moment";
+import moment from "moment";
 import axios from "axios";
 import ContractFilters from "./ContractFilters.vue";
 // import Vue from "vue";
@@ -150,6 +163,12 @@ export default {
   name: "ContractsHub",
   components: {
     ContractFilters,
+  },
+
+  filters: {
+    showDate: function(num) {
+      return moment(num).format("MMMM DD, YYYY");
+    },
   },
   data: function() {
     return {
@@ -463,6 +482,10 @@ export default {
 
 .color-white{
   color: white;
+}
+
+.dark-grey {
+  color: black;
 }
 
 .bg-purple {
