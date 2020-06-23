@@ -2,8 +2,8 @@
   <div class="main">
     <div class="intro-text">
       <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
-      <p>You can find more opportunities on the City’s RFI and RFP listing.</p>
-      <p>For more details on how to find and apply to contract opportunities, see how to do business with the City.</p>
+      <p>You can find more opportunities on the <a href="https://www.phila.gov/rfp/">City’s RFI and RFP listing.</a></p>
+      <p>For more details on how to find and apply to contract opportunities, see <a href="https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/do-business-with-the-city/">how to do business with the City.</a></p>
     </div>
     <div class="search">
       <input
@@ -208,7 +208,7 @@ export default {
       competition: [],
       competitionFilters: [{
         label: "Open to local business entities only",
-        sublabel: "Get ceritifed as a <a href=', https://www.phila.gov/services/business-self-employment/biddingon-a-city-contract/get-certified-as-a-local-businessentity/'>local business entity</a>",
+        sublabel: "Get ceritifed as a <a href='https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/get-certified-as-a-local-business-entity/'>local business entity</a>",
         matchKey: "competition",
         matchValue: "LBE-only",
         valueStore: "competition",
