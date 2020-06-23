@@ -87,7 +87,7 @@
               v-if="contract.data_source == 'PHL-Contracts'"
               class="contract-header bg-ghost-gray"
             >
-              <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidAck.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
+              <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
                 {{ contract.opportunity_title }}
               </a>
             </h2>
@@ -121,7 +121,7 @@
               </div>
             </div>
             <div class="description">
-              {{ contract.opportunity_description }}
+              {{ contract.opportunity_description | truncate }}
               <!-- display nigp codes if its phl-contracts -->
             </div>
             <div class="last-data">
@@ -146,7 +146,7 @@
                 </a>
                 <a
                   v-if="contract.data_source == 'PHL-Contracts'"
-                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidAck.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
+                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
                 >
                   View details in PHL Contracts
                 </a>
@@ -179,6 +179,13 @@ export default {
     showDate: function(num) {
       return moment(num).format("MMMM DD, YYYY");
     },
+
+    truncate: function(val) {
+      if (val.length > 500) {
+        return val.substring(0, 500) + '...' ;       
+      } 
+      return val;        
+    },
   },
   data: function() {
     return {
@@ -188,7 +195,7 @@ export default {
       competition: [],
       competitionFilters: [{
         label: "Open to local business entities only",
-        sublabel: "Get ceritifed as a local business entity",
+        sublabel: "Get ceritifed as a <a href=', https://www.phila.gov/services/business-self-employment/biddingon-a-city-contract/get-certified-as-a-local-businessentity/'>local business entity</a>",
         matchKey: "competition",
         matchValue: "LBE-only",
         valueStore: "competition",
@@ -203,7 +210,7 @@ export default {
       solicitation: [],
       solicitationFilters: [{
         label: "Request for proposals",
-        sublabel: "Evaluated under best value guidelines",
+        sublabel: "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
         matchKey: "solicitation",
         matchValue: "RFP",
         valueStore: "solicitation",
@@ -482,7 +489,7 @@ export default {
 
 .sublabel {
     font-size: 12px;
-    margin-left: 1.5rem;
+    margin-left: 2rem;
 }
 
 .checkbox-wrap {

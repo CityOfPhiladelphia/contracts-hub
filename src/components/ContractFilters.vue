@@ -8,7 +8,7 @@ import ContractFilters from 'ContractFilters.vue';
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Contract Type</span>
         <div class="disclaimer">
-          Learn more about contract types.
+          Learn more about <a href="https://www.phila.gov/departments/procurement-department/contracts-information/types-of-contracts/">contract types.</a>
         </div>
       </div>
       <div
@@ -68,9 +68,13 @@ import ContractFilters from 'ContractFilters.vue';
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
           <br>
-          <span class="sublabel"> {{ filter.sublabel }}</span>
 
         </label>
+        <div
+          v-if="filter.sublabel"
+          class="sublabel"
+          v-html="filter.sublabel"
+        />
       </div>
 
       <div class="filter-title bg-ghost-gray">
@@ -92,12 +96,13 @@ import ContractFilters from 'ContractFilters.vue';
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
           <br>
-          <span
-            v-if="filter.sublabel"
-            class="sublabel"
-          > {{ filter.sublabel }}
-          </span>
+          
         </label>
+        <div
+          v-if="filter.sublabel"
+          class="sublabel"
+          v-html="filter.sublabel"
+        />
       </div>
     </div>
     <div
