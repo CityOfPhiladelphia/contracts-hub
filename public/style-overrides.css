@@ -1,0 +1,17 @@
+
+ .site-header {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 9000;
+
+} 
+
+.app-nav {
+    position: sticky;
+    top: 72px;
+    z-index: 9000;
+
+}
+
+

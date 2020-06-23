@@ -498,6 +498,7 @@ export default {
 .post-disclaimer {
     margin-top: 10px;
     margin-left: 5px;
+    font-style: italic;
 }
 
 .sublabel {
