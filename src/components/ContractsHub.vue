@@ -69,45 +69,51 @@
         </div>
     
         <div class="contracts-list">
-          <div
-            v-for="contract in contracts"
-            :key="contract.bid_number"
-            class="single-contract"
+          <paginate
+            :ref="'contractsPagination'"
+            name="contracts"
+            :list="contracts"
+            :per="10"
           >
-            <!-- <h2> {{ contract.opportunity_title }} </h2> -->
-            <h2 
-              v-if="contract.data_source == 'E-Contracts'"
-              class="contract-header bg-ghost-gray"
+            <div
+              v-for="contract in paginated('contracts')"
+              :key="contract.bid_number"
+              class="single-contract"
             >
-              <a :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number">
-                {{ contract.type_code }} contract for {{ contract.department }}
-              </a>
-            </h2>
-            <h2 
-              v-if="contract.data_source == 'PHL-Contracts'"
-              class="contract-header bg-ghost-gray"
-            >
-              <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
-                {{ contract.opportunity_description }}
-              </a>
-            </h2>
-            <div class="contract-tags">
-              <div
-                class="contract-tag"
-                :class="getCorrespondingTag(contract.contract_category).class"
+              <!-- <h2> {{ contract.opportunity_title }} </h2> -->
+              <h2 
+                v-if="contract.data_source == 'E-Contracts'"
+                class="contract-header bg-ghost-gray"
               >
-                {{ getCorrespondingTag(contract.contract_category).tag }}
-              </div>
+                <a :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number">
+                  {{ contract.type_code }} contract for {{ contract.department }}
+                </a>
+              </h2>
+              <h2 
+                v-if="contract.data_source == 'PHL-Contracts'"
+                class="contract-header bg-ghost-gray"
+              >
+                <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
+                  {{ contract.opportunity_description }}
+                </a>
+              </h2>
+              <div class="contract-tags">
+                <div
+                  class="contract-tag"
+                  :class="getCorrespondingTag(contract.contract_category).class"
+                >
+                  {{ getCorrespondingTag(contract.contract_category).tag }}
+                </div>
               
-              <div
-                v-if="contract.estimated_amount !== null"
-                class="contract-tag"
-                :class="getAmountTag(contract.estimated_amount).class"
-              >
-                {{ getAmountTag(contract.estimated_amount).tag }}
-              </div>
+                <div
+                  v-if="contract.estimated_amount !== null"
+                  class="contract-tag"
+                  :class="getAmountTag(contract.estimated_amount).class"
+                >
+                  {{ getAmountTag(contract.estimated_amount).tag }}
+                </div>
 
-              <!-- <div
+                <!-- <div
                 v-if="!contract.estimated_amount"
                 class="contract-tag"
                 :class="getAmountTag(100001).class"
@@ -115,66 +121,80 @@
                 {{ getAmountTag(100001).tag }}
               </div> -->
 
-              <div
-                class="contract-tag"
-                :class="getCorrespondingTag(contract.data_source).class"
-              >
-                {{ getCorrespondingTag(contract.data_source).tag }}
-              </div>
-              <div
-                
-                class="contract-tag"
-                :class="getCorrespondingTag('Open to anyone').class"
-              >
-                {{ getCorrespondingTag('Open to anyone').tag }}
-              </div>
-            </div>
-            <div class="description">
-              <div 
-                v-if="contract.data_source == 'E-Contracts'"
-              >
-                {{ contract.opportunity_description | truncate }}
-              </div>
-              <div 
-                v-if="contract.data_source == 'PHL-Contracts'"
-              >
-                <div 
-                  v-for="code in contract.nigp_codes"
-                  :key="code"
+                <div
+                  class="contract-tag"
+                  :class="getCorrespondingTag(contract.data_source).class"
                 >
-                  {{ code }}
+                  {{ getCorrespondingTag(contract.data_source).tag }}
+                </div>
+                <div
+                
+                  class="contract-tag"
+                  :class="getCorrespondingTag('Open to anyone').class"
+                >
+                  {{ getCorrespondingTag('Open to anyone').tag }}
+                </div>
+              </div>
+              <div class="description">
+                <div 
+                  v-if="contract.data_source == 'E-Contracts'"
+                >
+                  {{ contract.opportunity_description | truncate }}
+                </div>
+                <div 
+                  v-if="contract.data_source == 'PHL-Contracts'"
+                >
+                  <div 
+                    v-for="code in contract.nigp_codes"
+                    :key="code"
+                  >
+                    {{ code }}
+                  </div>
+                </div>
+              </div>
+              <div class="last-data">
+                <br>
+                <b>Responses due: </b>
+                <span>{{ contract.bid_available_date | showDate }} </span>
+                <br>
+                <b>Posted by: </b>
+                <span>{{ contract.department }}</span>
+                <br>
+                <b>Number: </b>
+                <span>{{ contract.bid_number }}</span>
+                <br>
+                <b>Date posted: </b>
+                <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+                <div class="see-more-link">
+                  <a
+                    v-if="contract.data_source == 'E-Contracts'"
+                    :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
+                  >
+                    View details in eContractPhilly
+                  </a>
+                  <a
+                    v-if="contract.data_source == 'PHL-Contracts'"
+                    :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
+                  >
+                    View details in PHL Contracts
+                  </a>
                 </div>
               </div>
             </div>
-            <div class="last-data">
-              <br>
-              <b>Responses due: </b>
-              <span>{{ contract.bid_available_date | showDate }} </span>
-              <br>
-              <b>Posted by: </b>
-              <span>{{ contract.department }}</span>
-              <br>
-              <b>Number: </b>
-              <span>{{ contract.bid_number }}</span>
-              <br>
-              <b>Date posted: </b>
-              <span>{{ contract.open_bidding_begin_date | showDate }}</span>
-              <div class="see-more-link">
-                <a
-                  v-if="contract.data_source == 'E-Contracts'"
-                  :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
-                >
-                  View details in eContractPhilly
-                </a>
-                <a
-                  v-if="contract.data_source == 'PHL-Contracts'"
-                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
-                >
-                  View details in PHL Contracts
-                </a>
-              </div>
-            </div>
-          </div>
+          </paginate>
+        </div>
+        <div
+          v-if="contracts.length > 0"
+          class="pagination-tabs"
+        >
+          <paginate-links
+            for="contracts"
+            :show-step-links="true"
+            :async="true"
+            :limit="3"
+            :step-links="paginateStepLinks"
+            @change="scrollToTop"
+          />
         </div>
       </div>
     </div>
@@ -185,8 +205,10 @@
 import moment from "moment";
 import axios from "axios";
 import ContractFilters from "./ContractFilters.vue";
-// import Vue from "vue";
+import VuePaginate from 'vue-paginate';
+import Vue from "vue";
 // import VueFuse from "vue-fuse";
+Vue.use(VuePaginate);
 
 const endpoint =
     "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
@@ -213,6 +235,12 @@ export default {
     return {
       contracts: [],
       search: "",
+
+      paginate: [ 'contracts' ],
+      paginateStepLinks: {
+        next: 'Next',
+        prev: 'Previous',
+      },
 
       competition: [],
       competitionFilters: [{
@@ -331,11 +359,19 @@ export default {
       return;
     },
 
+    filterContracts: function() {
+      return;
+    },
+
+    searchContracts: function() {
+      return;
+    },
+
     getAmountTag(num) {
       if (num > 100000) {
         return {
           tag: "Over 100k",
-          class: "bg-yellow color-white",
+          class: "bg-yellow color-gray",
         };
       } else if (num < 340000) {
         return {
@@ -345,11 +381,19 @@ export default {
       } else if (34000 <= num <= 100000) {
         return {
           tag: "$34k-$100k",
-          class: "bg-dark-green dark-grey",
+          class: "bg-dark-green color-grey",
         };
       }
 
     },
+
+    scrollToTop () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    },
+
 
     getCorrespondingTag(tag) {
       if (tag !== "") {
@@ -373,7 +417,7 @@ export default {
         case "Services, Supplies, and Equipment":
           return {
             tag: "SS&E",
-            class: "bg-light-blue dark-gray",
+            class: "bg-electric-blue dark-gray",
           };
         case "E-Contracts":
           return {
@@ -383,7 +427,7 @@ export default {
         case "PHL-Contracts":
           return {
             tag: "BID",
-            class: "bg-orange color-white",
+            class: "bg-orange color-gray",
           };
 
         case "LBE only":
@@ -394,13 +438,10 @@ export default {
         case "Open to anyone":
           return {
             tag: "OPEN TO ANYONE",
-            class: "bg-mint-green dark-grey",
+            class: "bg-mint-green color-grey",
           };
         default:
-          return {
-            tag: "$" + tag,
-            class: "bg-dark-gray",
-          };
+          return;
         }
       }
     },
@@ -413,9 +454,12 @@ export default {
 .main {
     width: 80rem;
     margin: 0 auto;
+    
 }
 
-
+main {
+  margin-bottom: 50px;
+}
 
 .intro-text {
     margin: 2rem 0;
@@ -437,12 +481,18 @@ export default {
     display: flex;
 }
 
+.contracts-list ul {
+  margin:0;
+  padding: 0;
+}
+
 .side-bar {
-    min-width: 30%;
+    width: 30%;
 }
 
 .results-container {
     padding: 20px;
+    width:70%;
 }
 
 .single-contract {
@@ -487,6 +537,9 @@ export default {
     }
 }
 
+.pagination-tabs {
+  float: right;
+}
 
 .single-filter {
   margin-bottom: 40px;
@@ -539,8 +592,8 @@ export default {
   color: white;
 }
 
-.dark-grey {
-  color: black;
+.color-grey {
+  color: #292828;
 }
 
 .bg-purple {
