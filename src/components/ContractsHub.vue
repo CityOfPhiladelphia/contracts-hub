@@ -54,7 +54,7 @@
               <select
                 id="sort-by"
                 v-model="sort"
-                @change="sortResults()"
+                @change="sortContracts()"
               >
                 <option
                   v-for="sortByType in sortByTypes"
@@ -70,9 +70,10 @@
     
         <div class="contracts-list">
           <paginate
-            :ref="'contractsPagination'"
+            ref="paginator"
             name="contracts"
             :list="contracts"
+            class="paginate-list"
             :per="10"
           >
             <div
@@ -99,6 +100,7 @@
               </h2>
               <div class="contract-tags">
                 <div
+                  v-if="contract.contract_category"
                   class="contract-tag"
                   :class="getCorrespondingTag(contract.contract_category).class"
                 >
@@ -113,22 +115,15 @@
                   {{ getAmountTag(contract.estimated_amount).tag }}
                 </div>
 
-                <!-- <div
-                v-if="!contract.estimated_amount"
-                class="contract-tag"
-                :class="getAmountTag(100001).class"
-              >
-                {{ getAmountTag(100001).tag }}
-              </div> -->
-
                 <div
+                
                   class="contract-tag"
                   :class="getCorrespondingTag(contract.data_source).class"
                 >
                   {{ getCorrespondingTag(contract.data_source).tag }}
                 </div>
                 <div
-                
+
                   class="contract-tag"
                   :class="getCorrespondingTag('Open to anyone').class"
                 >
@@ -182,19 +177,24 @@
               </div>
             </div>
           </paginate>
-        </div>
-        <div
-          v-if="contracts.length > 0"
-          class="pagination-tabs"
-        >
-          <paginate-links
-            for="contracts"
-            :show-step-links="true"
-            :async="true"
-            :limit="3"
-            :step-links="paginateStepLinks"
-            @change="scrollToTop"
-          />
+        
+          <div
+            
+            class="pagination-tabs"
+          >
+            <paginate-links
+              for="contracts"
+              :async="true"
+              :limit="3"
+              :show-step-links="true"
+              :hide-single-page="false"
+              :step-links="{
+                next: 'Next',
+                prev: 'Previous'
+              }"
+              @change="scrollToTop"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -337,6 +337,14 @@ export default {
       return "";
     },
   },
+
+  watch: {
+    // sort (val) {
+    //   if (val) {
+    //     this.sortContracts();
+    //   }
+    // },
+  },
   mounted: function() {
     this.getAllContracts();
   },
@@ -344,7 +352,10 @@ export default {
     getAllContracts: function() {
       axios.get(endpoint).then(response => {
         this.contracts = response.data.rows;
-      });
+      })
+        .catch(e=> {
+          console.log(e);
+        });
     },
 
     clearAllFilters: function() {
@@ -356,7 +367,61 @@ export default {
     },
 
     sortContracts: function() {
-      return;
+
+      switch (this.sort) {
+      case 'Responses due':
+        
+        this.contracts.sort((a, b) => {
+          if (a.bid_available_date < b.bid_available_date) {
+            return -1;
+          }
+          if (a.bid_available_date > b.bid_available_date) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+        
+      case 'Contract title':
+        this.contracts.sort((a, b) => {
+          if (a.opportunity_title < b.opportunity_title) {
+            return -1;
+          }
+          if (a.opportunity_title > b.opportunity_title) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      
+      case 'Department':
+        this.contracts.sort((a, b) => {
+          if (a.department < b.department) {
+            return -1;
+          }
+          if (a.department > b.department) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      
+      case 'Date added':
+        this.contracts.sort((a, b) => {
+          if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
+            return -1;
+          }
+          if (a.open_bidding_begin_date > b.open_bidding_begin_date) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+        
+      default:
+        return;
+        
+      }
     },
 
     filterContracts: function() {
@@ -640,4 +705,6 @@ background-color: #a1a1a1;
   float: right;
   text-decoration:underline;
 }
+
+
 </style>
