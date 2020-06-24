@@ -210,6 +210,7 @@ import Vue from "vue";
 // import VueFuse from "vue-fuse";
 Vue.use(VuePaginate);
 
+
 const endpoint =
     "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
 
