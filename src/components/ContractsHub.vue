@@ -355,7 +355,7 @@ export default {
         this.contracts = response.data.rows;
       })
         .catch(e=> {
-          console.log(e);
+          window.console.log(e);
         });
     },
 
