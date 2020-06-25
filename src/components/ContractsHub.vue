@@ -1,6 +1,7 @@
 <template>
   <div class="main">
     <div class="intro-text">
+      STAGING
       <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
       <p>You can find more opportunities on the <a href="https://www.phila.gov/rfp/">City’s RFI and RFP listing.</a></p>
       <p>For more details on how to find and apply to contract opportunities, see <a href="https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/do-business-with-the-city/">how to do business with the City.</a></p>
