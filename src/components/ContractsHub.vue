@@ -14,7 +14,6 @@
         placeholder="Search by title or keyword"
       >
       <input
-        ref="archive-search-bar"
         type="submit"
         class="search-submit"
         value="Search"
@@ -86,7 +85,10 @@
                 v-if="contract.data_source == 'E-Contracts'"
                 class="contract-header bg-ghost-gray"
               >
-                <a :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number">
+                <a 
+                  target="_blank" 
+                  :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
+                >
                   {{ contract.type_code }} contract for {{ contract.department }}
                 </a>
               </h2>
@@ -94,7 +96,10 @@
                 v-if="contract.data_source == 'PHL-Contracts'"
                 class="contract-header bg-ghost-gray"
               >
-                <a :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'">
+                <a
+                  target="_blank" 
+                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
+                >
                   {{ contract.opportunity_description }}
                 </a>
               </h2>
@@ -163,12 +168,14 @@
                 <div class="see-more-link">
                   <a
                     v-if="contract.data_source == 'E-Contracts'"
+                    target="_blank" 
                     :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
                   >
                     View details in eContractPhilly
                   </a>
                   <a
                     v-if="contract.data_source == 'PHL-Contracts'"
+                    target="_blank" 
                     :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
                   >
                     View details in PHL Contracts
