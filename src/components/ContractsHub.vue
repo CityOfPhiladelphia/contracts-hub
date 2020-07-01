@@ -12,7 +12,7 @@
         v-model="search"
         class="search-field"
         type="text"
-        placeholder="Search by title or keyword"
+        placeholder="Search by contract title, keyword, department, or NIGP code"
       >
       <input
         type="submit"
@@ -22,6 +22,7 @@
       <button
         v-if="search.length > 0"
         class="clear-search-btn"
+        @click="clearAllFilters()"
       >
         <i class="fas fa-times" />
       </button>
@@ -81,32 +82,20 @@
               :key="contract.bid_number"
               class="single-contract"
             >
-              <!-- <h2> {{ contract.opportunity_title }} </h2> -->
               <h2 
-                v-if="contract.data_source == 'E-Contracts'"
                 class="contract-header bg-ghost-gray"
               >
                 <a 
                   target="_blank" 
-                  :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
+                  :href="contract.url"
                 >
-                  {{ contract.type_code }} contract for {{ contract.department }}
+                  {{ contract.display_title }}
                 </a>
               </h2>
-              <h2 
-                v-if="contract.data_source == 'PHL-Contracts'"
-                class="contract-header bg-ghost-gray"
-              >
-                <a
-                  target="_blank" 
-                  :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
-                >
-                  {{ contract.opportunity_description }}
-                </a>
-              </h2>
+             
               <div class="contract-tags">
                 <div
-                  v-if="contract.contract_category"
+                  v-if="contract.contract_category && contract.contract_category !== null "
                   class="contract-tag"
                   :class="getCorrespondingTag(contract.contract_category).class"
                 >
@@ -114,7 +103,7 @@
                 </div>
               
                 <div
-                  v-if="contract.estimated_amount !== null"
+                  v-if="contract.estimated_amount && contract.estimated_amount !== null"
                   class="contract-tag"
                   :class="getAmountTag(contract.estimated_amount).class"
                 >
@@ -122,11 +111,12 @@
                 </div>
 
                 <div
-                
+                  v-if="contract.solicitation_type && contract.solicitation_type !== null"
+
                   class="contract-tag"
-                  :class="getCorrespondingTag(contract.data_source).class"
+                  :class="getCorrespondingTag(contract.solicitation_type).class"
                 >
-                  {{ getCorrespondingTag(contract.data_source).tag }}
+                  {{ getCorrespondingTag(contract.solicitation_type).tag }}
                 </div>
                 <div
 
@@ -145,6 +135,7 @@
                 <div 
                   v-if="contract.data_source == 'PHL-Contracts'"
                 >
+                  <!-- {{ contract.opportunity_description | truncate }} -->
                   <div 
                     v-for="code in contract.nigp_codes"
                     :key="code"
@@ -215,8 +206,9 @@ import axios from "axios";
 import ContractFilters from "./ContractFilters.vue";
 import VuePaginate from 'vue-paginate';
 import Vue from "vue";
-// import VueFuse from "vue-fuse";
+import VueFuse from "vue-fuse";
 Vue.use(VuePaginate);
+Vue.use(VueFuse);
 
 
 const endpoint =
@@ -243,6 +235,7 @@ export default {
   data: function() {
     return {
       contracts: [],
+      allContracts: [],
       search: "",
 
       paginate: [ 'contracts' ],
@@ -336,6 +329,21 @@ export default {
         "Department",
         "Date added",
       ],
+      searchOptions: {
+        shouldSort: false, 
+        threshold: 0.4, 
+        keys: [
+          'contract_category',
+          'nigp_codes',
+          'display_title',
+          'opportunity_description',
+          'solicitation_type',
+          'department',
+          'bid_number',
+          'type_code',
+          'contract_category',
+        ],
+      },
     };
   },
   computed: {
@@ -348,11 +356,9 @@ export default {
   },
 
   watch: {
-    // sort (val) {
-    //   if (val) {
-    //     this.sortContracts();
-    //   }
-    // },
+    search (val) {
+      this.searchContracts();
+    },
   },
   mounted: function() {
     this.getAllContracts();
@@ -360,7 +366,26 @@ export default {
   methods: {
     getAllContracts: function() {
       axios.get(endpoint).then(response => {
-        this.contracts = response.data.rows;
+        this.allContracts = response.data.rows;
+        this.allContracts.forEach((contract)=>{
+          if (contract.data_source == "PHL-Contracts") {
+            contract.display_title = contract.opportunity_description;
+            contract.url = 'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids';
+
+            contract.solicitation_type = "BID";
+            if (contract.contract_category == "Best Value" || contract.contract_category == "Request for Information") {
+              contract.solicitation_type = "RFP";
+              contract.contract_category = "Services, Supplies, and Equipment";
+            }
+          } else if (contract.data_source == "E-Contracts") {
+            contract.display_title = contract.type_code + " contract for "+  contract.department;
+            contract.url = 'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number;
+            contract.solicitation_type = "RFP";
+          }
+        });
+        this.sortContracts();
+      }).then(()=>{
+        this.contracts = this.allContracts;
       })
         .catch(e=> {
           window.console.log(e);
@@ -368,7 +393,7 @@ export default {
     },
 
     clearAllFilters: function() {
-      return;
+      this.search = "";
     },
 
     updateResultsList: function() {
@@ -380,7 +405,7 @@ export default {
       switch (this.sort) {
       case 'Responses due':
         
-        this.contracts.sort((a, b) => {
+        this.allContracts.sort((a, b) => {
           if (a.bid_available_date < b.bid_available_date) {
             return -1;
           }
@@ -392,11 +417,11 @@ export default {
         break;
         
       case 'Contract title':
-        this.contracts.sort((a, b) => {
-          if (a.opportunity_title < b.opportunity_title) {
+        this.allContracts.sort((a, b) => {
+          if (a.display_title.toUpperCase() < b.display_title.toUpperCase()) {
             return -1;
           }
-          if (a.opportunity_title > b.opportunity_title) {
+          if (a.display_title.toUpperCase() > b.display_title.toUpperCase()) {
             return 1;
           }
           return 0;
@@ -404,7 +429,7 @@ export default {
         break;
       
       case 'Department':
-        this.contracts.sort((a, b) => {
+        this.allContracts.sort((a, b) => {
           if (a.department < b.department) {
             return -1;
           }
@@ -416,7 +441,7 @@ export default {
         break;
       
       case 'Date added':
-        this.contracts.sort((a, b) => {
+        this.allContracts.sort((a, b) => {
           if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
             return -1;
           }
@@ -438,7 +463,16 @@ export default {
     },
 
     searchContracts: function() {
-      return;
+      if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
+        this.contracts = [];
+        this.$search(this.search, this.allContracts, this.searchOptions).then(contracts => {
+          this.contracts = contracts;
+        });
+        this.$refs.paginator.goToPage(0);
+      } else {
+        this.contracts = this.allContracts;
+        this.$refs.paginator.goToPage(0);
+      }
     },
 
     getAmountTag(num) {
@@ -493,12 +527,12 @@ export default {
             tag: "SS&E",
             class: "bg-electric-blue dark-gray",
           };
-        case "E-Contracts":
+        case "RFP":
           return {
             tag: "RFP",
             class: "bg-brown color-white",
           };
-        case "PHL-Contracts":
+        case "BID":
           return {
             tag: "BID",
             class: "bg-orange color-gray",
@@ -515,7 +549,10 @@ export default {
             class: "bg-mint-green color-grey",
           };
         default:
-          return;
+          return{
+            tag: tag,
+            class: "",
+          };
         }
       }
     },
@@ -537,6 +574,23 @@ main {
 
 .intro-text {
     margin: 2rem 0;
+}
+
+.clear-search-btn {
+  position: absolute;
+  top: 16px;
+  right: 70px;
+  padding: 0;
+  font-size: 20px;
+  background-color: #fff;
+  opacity: 0.8;
+  z-index: 999;
+  cursor: pointer;
+  color: rgba(60, 60, 60, 0.5);
+  &:hover {
+    background: transparent;
+    color: black;
+  }
 }
 
 .contract-header {
