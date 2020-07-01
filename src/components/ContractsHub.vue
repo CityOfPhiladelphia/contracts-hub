@@ -207,9 +207,20 @@ import ContractFilters from "./ContractFilters.vue";
 import VuePaginate from 'vue-paginate';
 import Vue from "vue";
 import VueFuse from "vue-fuse";
+import VueAnalytics from "vue-analytics";
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
 
+/**
+* @desc google analytics, only enabled in production
+*/
+Vue.use(VueAnalytics, {
+  id: 'UA-860026-1',
+  debug: {
+    enabled: process.env.NODE_ENV === 'development',
+    sendHitTask: process.env.NODE_ENV === 'production',
+  },
+});
 
 const endpoint =
     "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
