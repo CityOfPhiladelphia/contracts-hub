@@ -50,7 +50,7 @@ import ContractFilters from 'ContractFilters.vue';
           </label>
         </div>
         <div class="post-disclaimer">
-          <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opporunity falls, you can select more than one filter.
+          <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opportunity falls, you can select more than one filter.
         </div>
       </div>
     </div>
