@@ -146,6 +146,7 @@
                     v-for="code in contract.nigp_codes"
                     :key="code"
                   >
+                    NIGP Codes:<br>
                     {{ code }}
                   </div>
                 </div>
@@ -503,7 +504,7 @@ export default {
       if (num > 100000) {
         return {
           tag: "Over 100k",
-          class: "bg-yellow color-gray",
+          class: "bg-yellow color-grey",
         };
       } else if (num < 340000) {
         return {
@@ -549,7 +550,7 @@ export default {
         case "Services, Supplies, and Equipment":
           return {
             tag: "SS&E",
-            class: "bg-electric-blue dark-gray",
+            class: "bg-services-blue color-grey",
           };
         case "RFP":
           return {
@@ -559,7 +560,7 @@ export default {
         case "BID":
           return {
             tag: "BID",
-            class: "bg-orange color-gray",
+            class: "bg-orange color-grey",
           };
 
         case "LBE only":
@@ -597,7 +598,7 @@ main {
 }
 
 .intro-text {
-    margin: 2rem 0;
+    margin: 3rem 0;
 }
 
 .clear-search-btn {
@@ -669,7 +670,7 @@ main {
     // background-color: #a1a1a1;
     margin: 3px 10px 3px 0px;
     font-weight: 700;
-    color: #fff;
+    // color: #fff;
     text-transform: uppercase;
     font-size: 12px;
 }
@@ -722,6 +723,9 @@ main {
     }
 }
 
+.search{
+  margin-bottom: 3rem;
+}
 .post-disclaimer {
     margin-top: 10px;
     margin-left: 5px;
@@ -755,7 +759,7 @@ main {
 }
 
 .color-grey {
-  color: #292828;
+  color: black;
 }
 
 .bg-purple {
@@ -784,6 +788,10 @@ background-color: #c5f0b7;
 
 .bg-vibrant-blue{
 background-color: #2176d2;
+}
+
+.bg-services-blue {
+  background-color: #d6e9fb;
 }
 
 .bg-dark-green{
