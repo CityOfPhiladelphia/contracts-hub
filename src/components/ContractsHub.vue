@@ -156,6 +156,7 @@
                 <br>
                 <b>Number: </b>
                 <span>{{ contract.bid_number }}</span>
+                <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                 <br>
                 <b>Date posted: </b>
                 <span>{{ contract.open_bidding_begin_date | showDate }}</span>
@@ -341,7 +342,7 @@ export default {
         "Responses due",
         "Contract title",
         "Department",
-        "Date added",
+        "Date posted",
       ],
       searchOptions: {
         shouldSort: false, 
@@ -457,7 +458,7 @@ export default {
         });
         break;
       
-      case 'Date added':
+      case 'Date posted':
         this.allContracts.sort((a, b) => {
           if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
             return -1;
@@ -579,7 +580,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style  lang="scss">
 .main {
     width: 80rem;
     margin: 0 auto;
@@ -619,8 +620,11 @@ main {
     margin: 3px 2px;
     font-weight: 700;
     color: #0f4d90;
-    /* text-transform: uppercase; */
+    
     font-size: 20px;
+    a {
+      text-decoration: none !important;
+    }
 }
 
 .contracts-container {
@@ -787,5 +791,12 @@ background-color: #a1a1a1;
   text-decoration:underline;
 }
 
+a {
+  text-decoration: underline !important;
+}
+
+ul li a {
+  text-decoration: none!important;
+}
 
 </style>
