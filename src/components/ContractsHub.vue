@@ -49,11 +49,15 @@
             v-show="contracts.length > 0"
             class="sort-by-container"
           >
-            <span> Sort by </span>
             <div
               v-if="contracts.length > 0"
               class="sort-by"
             >
+              <label 
+                for="sort-by"
+                aria-label="Sort By"
+              >Sort by 
+              </label>
               <select
                 id="sort-by"
                 v-model="sort"
@@ -120,13 +124,13 @@
                 >
                   {{ getCorrespondingTag(contract.solicitation_type).tag }}
                 </div>
-                <div
+                <!-- <div
 
                   class="contract-tag"
                   :class="getCorrespondingTag('Open to anyone').class"
                 >
                   {{ getCorrespondingTag('Open to anyone').tag }}
-                </div>
+                </div> -->
               </div>
               <div class="description">
                 <div 
@@ -237,7 +241,7 @@ export default {
 
   filters: {
     showDate: function(num) {
-      return moment(num).format("MMMM DD, YYYY");
+      return moment(num).format("MMMM D, YYYY h:mm A");
     },
 
     truncate: function(val) {
@@ -276,19 +280,20 @@ export default {
       ],
       solicitation: [],
       solicitationFilters: [{
-        label: "Request for proposals",
-        sublabel: "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
-        matchKey: "solicitation",
-        matchValue: "RFP",
-        valueStore: "solicitation",
-      },
-      {
         label: "Invitation to bid",
         sublabel: "Awarded to lowest-qualified bidder",
         matchKey: "solicitation",
         matchValue: "IFB",
         valueStore: "solicitation",
       },
+      {
+        label: "Request for proposals",
+        sublabel: "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
+        matchKey: "solicitation",
+        matchValue: "RFP",
+        valueStore: "solicitation",
+      },
+      
       ],
       size: [],
       sizeFilters: [{
@@ -330,7 +335,7 @@ export default {
         valueStore: "contracttype",
       },
       {
-        label: "Services, supplies, and equipment",
+        label: "Services, supplies, and equipment (SS&E)",
         matchKey: "contract_category",
         matchValue: "SSE",
         valueStore: "contracttype",
@@ -646,24 +651,28 @@ main {
 }
 
 .single-contract {
-    margin-bottom: 30px;
+    margin-bottom: 100px;
 }
 
-.contract-tag {
+
+
+.contract-tags {
+    margin: 10px 0 15px;
+    line-height: 1.1;
+    display:flex;
+
+    .contract-tag {
     display: inline-block;
+    margin-right: 30px;
     line-height: 1;
     padding: 2px 10px;
-    background-color: #a1a1a1;
-    margin: 3px 2px;
+    // background-color: #a1a1a1;
+    margin: 3px 10px 3px 0px;
     font-weight: 700;
     color: #fff;
     text-transform: uppercase;
     font-size: 12px;
 }
-
-.contract-tags {
-    margin: 10px 0 15px;
-    line-height: 1.1;
 }
 
 .top-container {
@@ -700,6 +709,7 @@ main {
     line-height: 1;
     padding: 15px 10px;
     background-color: #a1a1a1;
+    margin-bottom: 15px;
     span {
         font-weight: 700;
         text-transform: uppercase;
@@ -715,16 +725,18 @@ main {
 .post-disclaimer {
     margin-top: 10px;
     margin-left: 5px;
-    font-style: italic;
+    // font-style: italic;
+    font-size: 12px;
 }
 
 .sublabel {
     font-size: 12px;
-    margin-left: 2rem;
+    margin-left: 30px;
+    margin-bottom: 10px;
 }
 
 .checkbox-wrap {
-    // margin-bottom: 20px;
+    margin-bottom: 5px;
     label {
       user-select: none;
         span {
@@ -787,8 +799,11 @@ background-color: #a1a1a1;
 }
 
 .see-more-link{
+  display: block;
+  margin-top: 3rem;
   float: right;
   text-decoration:underline;
+
 }
 
 a {

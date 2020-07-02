@@ -83,7 +83,7 @@ import ContractFilters from 'ContractFilters.vue';
         />
       </div>
     </div>
-    <div class="single-filter">
+    <!-- <div class="single-filter">
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Competition</span>
       </div>
@@ -111,7 +111,7 @@ import ContractFilters from 'ContractFilters.vue';
           v-html="filter.sublabel"
         />
       </div>
-    </div>
+    </div> -->
     <div
       v-if="vModal"
       class="v-modal-btns"
