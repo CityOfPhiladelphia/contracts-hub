@@ -1,7 +1,6 @@
 <template>
   <div class="main">
     <div class="intro-text">
-      STAGING
       <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
       <p>You can find more opportunities on the <a href="https://www.phila.gov/rfp/">City’s RFI and RFP listing.</a></p>
       <p>For more details on how to find and apply to contract opportunities, see <a href="https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/do-business-with-the-city/">how to do business with the City.</a></p>
@@ -46,7 +45,10 @@
             v-html="showNum"
           />
         
-          <div class="sort-by-container">
+          <div 
+            v-show="contracts.length > 0"
+            class="sort-by-container"
+          >
             <span> Sort by </span>
             <div
               v-if="contracts.length > 0"
@@ -154,6 +156,7 @@
                 <br>
                 <b>Number: </b>
                 <span>{{ contract.bid_number }}</span>
+                <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                 <br>
                 <b>Date posted: </b>
                 <span>{{ contract.open_bidding_begin_date | showDate }}</span>
@@ -182,6 +185,7 @@
             class="pagination-tabs"
           >
             <paginate-links
+              v-show="contracts.length > 0"
               for="contracts"
               :async="true"
               :limit="3"
@@ -207,9 +211,20 @@ import ContractFilters from "./ContractFilters.vue";
 import VuePaginate from 'vue-paginate';
 import Vue from "vue";
 import VueFuse from "vue-fuse";
+import VueAnalytics from "vue-analytics";
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
 
+/**
+* @desc google analytics, only enabled in production
+*/
+Vue.use(VueAnalytics, {
+  id: 'UA-860026-1',
+  debug: {
+    enabled: process.env.NODE_ENV === 'development',
+    sendHitTask: process.env.NODE_ENV === 'production',
+  },
+});
 
 const endpoint =
     "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
@@ -327,7 +342,7 @@ export default {
         "Responses due",
         "Contract title",
         "Department",
-        "Date added",
+        "Date posted",
       ],
       searchOptions: {
         shouldSort: false, 
@@ -348,10 +363,13 @@ export default {
   },
   computed: {
     showNum: function() {
-      if (this.contracts.length) {
+      if (this.contracts.length === this.allContracts.length) {
         return `<p>Showing all ${this.contracts.length} available opporunities.</p>`;
-      }
-      return "";
+      }  else  
+      if (this.contracts.length === 0) {
+        return '<p>No opportunities found. Try adjusting your filters or search entry.</p>';
+      } 
+      return `<p>Showing ${this.contracts.length} out of ${this.allContracts.length} opportunities.</p>`;
     },
   },
 
@@ -440,7 +458,7 @@ export default {
         });
         break;
       
-      case 'Date added':
+      case 'Date posted':
         this.allContracts.sort((a, b) => {
           if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
             return -1;
@@ -459,19 +477,20 @@ export default {
     },
 
     filterContracts: function() {
+      //
       return;
     },
 
     searchContracts: function() {
       if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
-        this.contracts = [];
+        // this.contracts = [];
         this.$search(this.search, this.allContracts, this.searchOptions).then(contracts => {
           this.contracts = contracts;
         });
-        this.$refs.paginator.goToPage(0);
+
       } else {
         this.contracts = this.allContracts;
-        this.$refs.paginator.goToPage(0);
+
       }
     },
 
@@ -561,7 +580,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style  lang="scss">
 .main {
     width: 80rem;
     margin: 0 auto;
@@ -601,8 +620,11 @@ main {
     margin: 3px 2px;
     font-weight: 700;
     color: #0f4d90;
-    /* text-transform: uppercase; */
+    
     font-size: 20px;
+    a {
+      text-decoration: none !important;
+    }
 }
 
 .contracts-container {
@@ -769,5 +791,12 @@ background-color: #a1a1a1;
   text-decoration:underline;
 }
 
+a {
+  text-decoration: underline !important;
+}
+
+ul li a {
+  text-decoration: none!important;
+}
 
 </style>
