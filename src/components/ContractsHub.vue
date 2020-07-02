@@ -359,10 +359,13 @@ export default {
   },
   computed: {
     showNum: function() {
-      if (this.contracts.length) {
+      if (this.contracts.length === this.allContracts.length) {
         return `<p>Showing all ${this.contracts.length} available opporunities.</p>`;
-      }
-      return "";
+      }  else  
+      if (this.contracts.length === 0) {
+        return '<p>No opportunities found. Try adjusting your filters or search entry.</p>';
+      } 
+      return `<p>Showing ${this.contracts.length} out of ${this.allContracts.length} opportunities.</p>`;
     },
   },
 
@@ -470,19 +473,20 @@ export default {
     },
 
     filterContracts: function() {
+      //
       return;
     },
 
     searchContracts: function() {
       if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
-        this.contracts = [];
+        // this.contracts = [];
         this.$search(this.search, this.allContracts, this.searchOptions).then(contracts => {
           this.contracts = contracts;
         });
-        this.$refs.paginator.goToPage(0);
+
       } else {
         this.contracts = this.allContracts;
-        this.$refs.paginator.goToPage(0);
+
       }
     },
 
