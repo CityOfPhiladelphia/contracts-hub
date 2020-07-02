@@ -736,7 +736,7 @@ main {
 }
 
 .checkbox-wrap {
-    margin-bottom: 5px;
+    margin-bottom: 5-px;
     label {
       user-select: none;
         span {
