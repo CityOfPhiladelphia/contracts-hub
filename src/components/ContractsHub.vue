@@ -99,88 +99,89 @@
                     {{ contract.display_title }}
                   </a>
                 </h2>
-             
-                <div class="contract-tags">
-                  <div
-                    v-if="contract.contract_category && contract.contract_category !== null "
-                    class="contract-tag"
-                    :class="getCorrespondingTag(contract.contract_category).class"
-                  >
-                    {{ getCorrespondingTag(contract.contract_category).tag }}
-                  </div>
+                <div class="contract-details">
+                  <div class="contract-tags">
+                    <div
+                      v-if="contract.contract_category && contract.contract_category !== null "
+                      class="contract-tag"
+                      :class="getCorrespondingTag(contract.contract_category).class"
+                    >
+                      {{ getCorrespondingTag(contract.contract_category).tag }}
+                    </div>
               
-                  <div
-                    v-if="contract.estimated_amount && contract.estimated_amount !== null"
-                    class="contract-tag"
-                    :class="getAmountTag(contract.estimated_amount).class"
-                  >
-                    {{ getAmountTag(contract.estimated_amount).tag }}
-                  </div>
+                    <div
+                      v-if="contract.estimated_amount && contract.estimated_amount !== null"
+                      class="contract-tag"
+                      :class="getAmountTag(contract.estimated_amount).class"
+                    >
+                      {{ getAmountTag(contract.estimated_amount).tag }}
+                    </div>
 
-                  <div
-                    v-if="contract.solicitation_type && contract.solicitation_type !== null"
+                    <div
+                      v-if="contract.solicitation_type && contract.solicitation_type !== null"
 
-                    class="contract-tag"
-                    :class="getCorrespondingTag(contract.solicitation_type).class"
-                  >
-                    {{ getCorrespondingTag(contract.solicitation_type).tag }}
-                  </div>
-                <!-- <div
+                      class="contract-tag"
+                      :class="getCorrespondingTag(contract.solicitation_type).class"
+                    >
+                      {{ getCorrespondingTag(contract.solicitation_type).tag }}
+                    </div>
+                    <!-- <div
 
                   class="contract-tag"
                   :class="getCorrespondingTag('Open to anyone').class"
                 >
                   {{ getCorrespondingTag('Open to anyone').tag }}
                 </div> -->
-                </div>
-                <div class="description">
-                  <div 
-                    v-if="contract.data_source == 'E-Contracts'"
-                  >
-                    {{ contract.opportunity_description | truncate }}
                   </div>
-                  <div 
-                    v-if="contract.data_source == 'PHL-Contracts'"
-                  >
-                    <!-- {{ contract.opportunity_description | truncate }} -->
+                  <div class="description">
                     <div 
-                      v-for="code in contract.nigp_codes"
-                      :key="code"
+                      v-if="contract.data_source == 'E-Contracts'"
                     >
-                      NIGP Codes:<br>
-                      {{ code }}
+                      {{ contract.opportunity_description | truncate }}
+                    </div>
+                    <div 
+                      v-if="contract.data_source == 'PHL-Contracts'"
+                    >
+                      <!-- {{ contract.opportunity_description | truncate }} -->
+                      <div 
+                        v-for="code in contract.nigp_codes"
+                        :key="code"
+                      >
+                        NIGP Codes:<br>
+                        {{ code }}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="last-data">
-                  <br>
-                  <b>Responses due: </b>
-                  <span>{{ contract.bid_available_date | showDate }} </span>
-                  <br>
-                  <b>Posted by: </b>
-                  <span>{{ contract.department }}</span>
-                  <br>
-                  <b>Number: </b>
-                  <span>{{ contract.bid_number }}</span>
-                  <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
-                  <br>
-                  <b>Date posted: </b>
-                  <span>{{ contract.open_bidding_begin_date | showDate }}</span>
-                  <div class="see-more-link">
-                    <a
-                      v-if="contract.data_source == 'E-Contracts'"
-                      target="_blank" 
-                      :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
-                    >
-                      View details in eContractPhilly
-                    </a>
-                    <a
-                      v-if="contract.data_source == 'PHL-Contracts'"
-                      target="_blank" 
-                      :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
-                    >
-                      View details in PHL Contracts
-                    </a>
+                  <div class="last-data">
+                    <br>
+                    <b>Responses due: </b>
+                    <span>{{ contract.bid_available_date | showDate }} </span>
+                    <br>
+                    <b>Posted by: </b>
+                    <span>{{ contract.department }}</span>
+                    <br>
+                    <b>Number: </b>
+                    <span>{{ contract.bid_number }}</span>
+                    <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
+                    <br>
+                    <b>Date posted: </b>
+                    <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+                    <div class="see-more-link">
+                      <a
+                        v-if="contract.data_source == 'E-Contracts'"
+                        target="_blank" 
+                        :href="'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number"
+                      >
+                        View details in eContractPhilly
+                      </a>
+                      <a
+                        v-if="contract.data_source == 'PHL-Contracts'"
+                        target="_blank" 
+                        :href="'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids'"
+                      >
+                        View details in PHL Contracts
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -215,7 +216,7 @@
       height="auto"
     >
       <div>
-        <h2>How to use Contracts hub</h2>
+        <h2>How to use Contracts Hub</h2>
         <button
           class="hide-modal-btn"
           @click="$modal.hide('howToUseModal')"
@@ -241,9 +242,15 @@
         <br>
         RFPs are hosted on eContract Philly, while bid opportunities are hosted on PHLContracts. Use these links to log in or register for a new account.
         <br>
-        <a href="https://philawx.phila.gov/econtract/">Log in to eContract Philly</a>
+        <a
+          target="_blank"
+          href="https://philawx.phila.gov/econtract/"
+        >Log in to eContract Philly</a>
         <br>
-        <a href="https://www.phlcontracts.phila.gov/bso/">Log in to PHLContracts</a>
+        <a
+          target="_blank"
+          href="https://www.phlcontracts.phila.gov/bso/"
+        >Log in to PHLContracts</a>
       </p>
       <div>
         <input
@@ -269,7 +276,7 @@ import VueFuse from "vue-fuse";
 import VueAnalytics from "vue-analytics";
 import VModal from 'vue-js-modal';
 
-Vue.use(VModal);
+// Vue.use(VModal);
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
 
@@ -685,6 +692,11 @@ main {
     a {
       text-decoration: none !important;
     }
+}
+
+.contract-details{
+  width: 95%;
+  margin: 0 auto;
 }
 
 .contracts-container {
