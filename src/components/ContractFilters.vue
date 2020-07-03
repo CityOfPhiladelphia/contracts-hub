@@ -21,8 +21,8 @@ import ContractFilters from 'ContractFilters.vue';
             :id="filter.label"
             type="checkbox"
             :value="filter.matchValue"
-            :checked="isFilterChecked(filter.matchValue, 'contracttype')"
-            @change="updateFilters('contracttype', $event)"
+            :checked="isFilterChecked(filter.matchValue, 'contracttypes')"
+            @change="updateFilters('contracttypes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -42,8 +42,8 @@ import ContractFilters from 'ContractFilters.vue';
             :id="filter.label"
             type="checkbox"
             :value="filter.matchValue"
-            :checked="isFilterChecked(filter.matchValue, 'size')"
-            @change="updateFilters('size', $event)"
+            :checked="isFilterChecked(filter.matchValue, 'sizes')"
+            @change="updateFilters('sizes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -162,13 +162,13 @@ export default {
       },
     },
 
-    contracttype: {
+    contracttypes: {
       type: Array,
       default: () => {
         return [];
       },
     },
-    size: {
+    sizes: {
       type: Array,
       default: () => {
         return [];

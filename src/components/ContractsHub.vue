@@ -32,8 +32,8 @@
           <contract-filters
             :update-results-list="updateResultsList"
             :clear-all-filters="clearAllFilters"
-            :contracttype.sync="contracttype"
-            :size.sync="size"
+            :contracttypes.sync="contracttypes"
+            :sizes.sync="sizes"
             :solicitation.sync="solicitation"
             :competition.sync="competition"
             v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
@@ -99,40 +99,41 @@
                     {{ contract.display_title }}
                   </a>
                 </h2>
-                <div class="contract-details">
-                  <div class="contract-tags">
-                    <div
-                      v-if="contract.contract_category && contract.contract_category !== null "
-                      class="contract-tag"
-                      :class="getCorrespondingTag(contract.contract_category).class"
-                    >
-                      {{ getCorrespondingTag(contract.contract_category).tag }}
-                    </div>
+                
+                <div class="contract-tags">
+                  <div
+                    v-if="contract.contract_category && contract.contract_category !== null "
+                    class="contract-tag"
+                    :class="getCorrespondingTag(contract.contract_category).class"
+                  >
+                    {{ getCorrespondingTag(contract.contract_category).tag }}
+                  </div>
               
-                    <div
-                      v-if="contract.estimated_amount && contract.estimated_amount !== null"
-                      class="contract-tag"
-                      :class="getAmountTag(contract.estimated_amount).class"
-                    >
-                      {{ getAmountTag(contract.estimated_amount).tag }}
-                    </div>
+                  <div
+                    v-if="contract.estimated_amount && contract.estimated_amount !== null"
+                    class="contract-tag"
+                    :class="getAmountTag(contract.estimated_amount).class"
+                  >
+                    {{ getAmountTag(contract.estimated_amount).tag }}
+                  </div>
 
-                    <div
-                      v-if="contract.solicitation_type && contract.solicitation_type !== null"
+                  <div
+                    v-if="contract.solicitation_type && contract.solicitation_type !== null"
 
-                      class="contract-tag"
-                      :class="getCorrespondingTag(contract.solicitation_type).class"
-                    >
-                      {{ getCorrespondingTag(contract.solicitation_type).tag }}
-                    </div>
-                    <!-- <div
+                    class="contract-tag"
+                    :class="getCorrespondingTag(contract.solicitation_type).class"
+                  >
+                    {{ getCorrespondingTag(contract.solicitation_type).tag }}
+                  </div>
+                  <!-- <div
 
                   class="contract-tag"
                   :class="getCorrespondingTag('Open to anyone').class"
                 >
                   {{ getCorrespondingTag('Open to anyone').tag }}
                 </div> -->
-                  </div>
+                </div>
+                <div class="contract-details">
                   <div class="description">
                     <div 
                       v-if="contract.data_source == 'E-Contracts'"
@@ -140,15 +141,16 @@
                       {{ contract.opportunity_description | truncate }}
                     </div>
                     <div 
-                      v-if="contract.data_source == 'PHL-Contracts'"
+                      v-if="contract.data_source == 'PHL-Contracts' && contract.nigp_codes.length > 0"
                     >
                       <!-- {{ contract.opportunity_description | truncate }} -->
+                      NIGP codes:
                       <div 
                         v-for="code in contract.nigp_codes"
                         :key="code"
                       >
-                        NIGP Codes:<br>
-                        {{ code }}
+                        <br>
+                        {{ code | showNIGP(nigpArray) }}
                       </div>
                     </div>
                   </div>
@@ -276,6 +278,9 @@ import VueFuse from "vue-fuse";
 import VueAnalytics from "vue-analytics";
 import VModal from 'vue-js-modal';
 
+import nigpCodes from "../assets/nigp-codes.json";
+
+
 Vue.use(VModal);
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
@@ -312,12 +317,28 @@ export default {
       } 
       return val;        
     },
+
+    showNIGP:function(val, nigpArray){
+      console.log(val);
+      let newCode = nigpArray.find((code) => {
+        code.code == val;
+        console.log(code.code + " " + newCode);
+      });
+      // console.log(newCode);
+      if (newCode){
+        return newCode.item;
+      } 
+
+      return val;
+     
+    },
   },
   data: function() {
     return {
       contracts: [],
       allContracts: [],
       search: "",
+      nigpArray: nigpCodes,
 
       paginate: [ 'contracts' ],
       paginateStepLinks: {
@@ -345,7 +366,7 @@ export default {
         label: "Invitation to bid",
         sublabel: "Awarded to lowest-qualified bidder",
         matchKey: "solicitation",
-        matchValue: "IFB",
+        matchValue: "ITB",
         valueStore: "solicitation",
       },
       {
@@ -357,50 +378,50 @@ export default {
       },
       
       ],
-      size: [],
+      sizes: [],
       sizeFilters: [{
         label: "Under $34,000",
-        matchKey: "size",
+        matchKey: "sizes",
         matchValue: "sub-34k",
-        valueStore: "size",
+        valueStore: "sizes",
       },
       {
         label: "$34,000 - $100,000",
-        matchKey: "size",
+        matchKey: "sizes",
         matchValue: "34k-100k",
-        valueStore: "size",
+        valueStore: "sizes",
       },
       {
         label: "Over $100,000",
-        matchKey: "size",
+        matchKey: "sizes",
         matchValue: "100k-plus",
-        valueStore: "size",
+        valueStore: "sizes",
       },
       ],
-      contracttype: [],
+      contracttypes: [],
       contractTypeFilters: [{
         label: "Concessions",
         matchKey: "contract_category",
-        matchValue: "concessions",
-        valueStore: "contracttype",
+        matchValue: "Concessions",
+        valueStore: "contracttypes",
       },
       {
         label: "Personal and professional services",
         matchKey: "contract_category",
-        matchValue: "PPS",
-        valueStore: "contracttype",
+        matchValue: "Professional Services",
+        valueStore: "contracttypes",
       },
       {
         label: "Public works",
         matchKey: "contract_category",
-        matchValue: "public-works",
-        valueStore: "contracttype",
+        matchValue: "Public Works",
+        valueStore: "contracttypes",
       },
       {
         label: "Services, supplies, and equipment (SS&E)",
         matchKey: "contract_category",
-        matchValue: "SSE",
-        valueStore: "contracttype",
+        matchValue: "Services, Supplies, and Equipment",
+        valueStore: "contracttypes",
       },
       ],
       sort: "Responses due",
@@ -431,18 +452,19 @@ export default {
   computed: {
     showNum: function() {
       if (this.contracts.length === this.allContracts.length) {
-        return `<p>Showing all ${this.contracts.length} available opporunities.</p>`;
+        return `<p>Showing all ${this.contracts.length} available opportunities.</p>`;
       }  else  
       if (this.contracts.length === 0) {
         return '<p>No opportunities found. Try adjusting your filters or search entry.</p>';
       } 
       return `<p>Showing ${this.contracts.length} out of ${this.allContracts.length} opportunities.</p>`;
     },
+
   },
 
   watch: {
     search () {
-      this.searchContracts();
+      this.filterContracts();
     },
   },
   mounted: function() {
@@ -543,22 +565,43 @@ export default {
       }
     },
 
-    filterContracts: function() {
-      //
-      return;
+    filterContracts: async function() {
+      this.contracts = await this.searchContracts(this.allContracts);
+      // this.contracts = this.sidebarFilter(filteredContracts);
+
     },
 
-    searchContracts: function() {
+    sidebarFilter: function(searchedContracts) {
+
+      let contractFilters = [
+        ...this.contractTypeFilters,
+        ...this.solicitationFilters,
+        ...this.sizeFilters,
+      ];
+
+      let finalContracts = [];
+
+      contractFilters.forEach(contractFilter => {
+        if (this[contractFilter.valueStore].length > 0 && this[contractFilter.valueStore].includes(contractFilter.matchValue)) {
+          finalContracts = searchedContracts.filter(contract => {
+            return this[contractFilter.valueStore].includes(contract[contractFilter.matchKey]);
+          });
+        }
+      });
+
+      return finalContracts;
+      
+ 
+    },
+
+
+    searchContracts: function(contracts) {
       if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
-        // this.contracts = [];
-        this.$search(this.search, this.allContracts, this.searchOptions).then(contracts => {
-          this.contracts = contracts;
-        });
-
-      } else {
-        this.contracts = this.allContracts;
-
-      }
+        return this.$search(this.search, contracts, this.searchOptions);
+      } 
+      
+      return this.allContracts;
+      
     },
 
     getAmountTag(num) {
@@ -713,7 +756,7 @@ main {
 }
 
 .results-container {
-    padding: 20px;
+    padding: 0px 20px;
     width:70%;
 }
 
