@@ -276,7 +276,7 @@ import VueFuse from "vue-fuse";
 import VueAnalytics from "vue-analytics";
 import VModal from 'vue-js-modal';
 
-// Vue.use(VModal);
+// Vue.use(VModal); do i need this for mobile?
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
 
