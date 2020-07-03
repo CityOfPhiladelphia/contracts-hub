@@ -155,7 +155,7 @@
                   <div class="last-data">
                     <br>
                     <b>Responses due: </b>
-                    <span>{{ contract.bid_available_date | showDate }} </span>
+                    <span>{{ contract.bid_due_date | showDate }} </span>
                     <br>
                     <b>Posted by: </b>
                     <span>{{ contract.department }}</span>
@@ -165,7 +165,7 @@
                     <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
                     <b>Date posted: </b>
-                    <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+                    <span>{{ contract.bid_post_date | showDate }}</span>
                     <div class="see-more-link">
                       <a
                         v-if="contract.data_source == 'E-Contracts'"
@@ -303,7 +303,7 @@ export default {
 
   filters: {
     showDate: function(num) {
-      return moment(num).format("MMMM D, YYYY h:mm A");
+      return moment(num).format("MMMM D, YYYY");
     },
 
     truncate: function(val) {
@@ -491,10 +491,10 @@ export default {
       case 'Responses due':
         
         this.allContracts.sort((a, b) => {
-          if (a.bid_available_date < b.bid_available_date) {
+          if (a.bid_due_date < b.bid_due_date) {
             return -1;
           }
-          if (a.bid_available_date > b.bid_available_date) {
+          if (a.bid_due_date > b.bid_due_date) {
             return 1;
           }
           return 0;
@@ -527,10 +527,10 @@ export default {
       
       case 'Date posted':
         this.allContracts.sort((a, b) => {
-          if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
+          if (a.bid_post_date < b.bid_post_date) {
             return -1;
           }
-          if (a.open_bidding_begin_date > b.open_bidding_begin_date) {
+          if (a.bid_post_date > b.bid_post_date) {
             return 1;
           }
           return 0;
