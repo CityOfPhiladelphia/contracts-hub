@@ -50,7 +50,7 @@ import ContractFilters from 'ContractFilters.vue';
           </label>
         </div>
         <div class="post-disclaimer">
-          <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opporunity falls, you can select more than one filter.
+          <b>Disclaimer:</b> These price ranges are used to categorize contracts by approximate size. If you're not sure where an opportunity falls, you can select more than one filter.
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@ import ContractFilters from 'ContractFilters.vue';
         />
       </div>
     </div>
-    <div class="single-filter">
+    <!-- <div class="single-filter">
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Competition</span>
       </div>
@@ -111,7 +111,7 @@ import ContractFilters from 'ContractFilters.vue';
           v-html="filter.sublabel"
         />
       </div>
-    </div>
+    </div> -->
     <div
       v-if="vModal"
       class="v-modal-btns"
