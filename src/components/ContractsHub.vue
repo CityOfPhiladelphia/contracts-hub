@@ -731,7 +731,7 @@ main {
   line-height: 1.5;
   padding: 2px 10px;
   background-color: #a1a1a1;
-  margin: 3px 2px;
+  // margin: 3px 2px;
   font-weight: 700;
   color: #0f4d90;
 

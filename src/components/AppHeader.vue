@@ -43,6 +43,10 @@ export default {
   .page-title-container a {
     text-decoration: none !important;
   }
+
+  .page-title {
+    font-size: 2rem !important;
+  }
   .beta-tag {
     display: inline-block;
     font-size: 12px;
