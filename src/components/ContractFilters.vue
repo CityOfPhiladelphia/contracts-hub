@@ -124,11 +124,11 @@ import ContractFilters from 'ContractFilters.vue';
       > &nbsp;
     </div>
     <input
-      class="clear-all-btn button"
+      class="button"
       type="button"
-      :disabled="!hasFilters"
       value="Clear All Filters"
-      @click="clearAllFilters(); $modal.hide('contract-filters')"
+      :disabled="noneSelected"
+      @click="clearAllFilters()"
     >
   </div>
 </template>
@@ -206,6 +206,11 @@ export default {
     vModal: {
       type: Boolean,
       default: false,
+    },
+  },
+  computed:{
+    noneSelected: function(){
+      return (this.sizes.length === 0 && this.contracttypes.length === 0 && this.solicitation.length === 0);
     },
   },
   methods: {

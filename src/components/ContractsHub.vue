@@ -469,7 +469,7 @@ export default {
               contract.display_amount = "sub34k";
             }
           }
-          
+
           if (contract.data_source == "PHL-Contracts") {
             contract.display_title = contract.opportunity_description;
             contract.url = 'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids';
@@ -509,6 +509,9 @@ export default {
 
     clearAllFilters: function() {
       this.search = "";
+      this.solicitation =[];
+      this.contracttypes = [];
+      this.sizes = [];
     },
 
 
