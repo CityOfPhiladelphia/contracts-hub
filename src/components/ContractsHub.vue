@@ -30,7 +30,7 @@
       <div class="contracts-container">
         <div class="side-bar">
           <contract-filters
-            :update-results-list="updateResultsList"
+            :filter-contracts="filterContracts"
             :clear-all-filters="clearAllFilters"
             :contracttypes.sync="contracttypes"
             :sizes.sync="sizes"
@@ -110,11 +110,11 @@
                   </div>
               
                   <div
-                    v-if="contract.estimated_amount && contract.estimated_amount !== null"
+                    v-if="contract.display_amount && contract.display_amount !== null"
                     class="contract-tag"
-                    :class="getAmountTag(contract.estimated_amount).class"
+                    :class="getCorrespondingTag(contract.display_amount).class"
                   >
-                    {{ getAmountTag(contract.estimated_amount).tag }}
+                    {{ getCorrespondingTag(contract.display_amount).tag }}
                   </div>
 
                   <div
@@ -150,14 +150,14 @@
                         :key="code"
                       >
                         <br>
-                        {{ code | showNIGP(nigpArray) }}
+                        {{ code }}
                       </div>
                     </div>
                   </div>
                   <div class="last-data">
                     <br>
                     <b>Responses due: </b>
-                    <span>{{ contract.bid_available_date | showDate }} </span>
+                    <span>{{ contract.bid_due_date | showDate }} </span>
                     <br>
                     <b>Posted by: </b>
                     <span>{{ contract.department }}</span>
@@ -167,7 +167,7 @@
                     <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
                     <b>Date posted: </b>
-                    <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+                    <span>{{ contract.bid_post_date | showDate }}</span>
                     <div class="see-more-link">
                       <a
                         v-if="contract.data_source == 'E-Contracts'"
@@ -308,7 +308,7 @@ export default {
 
   filters: {
     showDate: function(num) {
-      return moment(num).format("MMMM D, YYYY h:mm A");
+      return moment(num).format("MMMM D, YYYY");
     },
 
     truncate: function(val) {
@@ -319,12 +319,11 @@ export default {
     },
 
     showNIGP:function(val, nigpArray){
-      console.log(val);
+      
       let newCode = nigpArray.find((code) => {
         code.code == val;
-        console.log(code.code + " " + newCode);
       });
-      // console.log(newCode);
+     
       if (newCode){
         return newCode.item;
       } 
@@ -365,36 +364,36 @@ export default {
       solicitationFilters: [{
         label: "Invitation to bid",
         sublabel: "Awarded to lowest-qualified bidder",
-        matchKey: "solicitation",
-        matchValue: "ITB",
-        valueStore: "solicitation",
+        matchKey: "solicitation_type",
+        matchValue: "BID",
+        valueStore: "solicitation_type",
       },
       {
         label: "Request for proposals",
         sublabel: "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
-        matchKey: "solicitation",
+        matchKey: "solicitation_type",
         matchValue: "RFP",
-        valueStore: "solicitation",
+        valueStore: "solicitation_type",
       },
       
       ],
       sizes: [],
       sizeFilters: [{
         label: "Under $34,000",
-        matchKey: "sizes",
-        matchValue: "sub-34k",
+        matchKey: "display_amount",
+        matchValue: "sub34k",
         valueStore: "sizes",
       },
       {
         label: "$34,000 - $100,000",
-        matchKey: "sizes",
-        matchValue: "34k-100k",
+        matchKey: "display_amount",
+        matchValue: "34kto100k",
         valueStore: "sizes",
       },
       {
         label: "Over $100,000",
-        matchKey: "sizes",
-        matchValue: "100k-plus",
+        matchKey: "display_amount",
+        matchValue: "100kplus",
         valueStore: "sizes",
       },
       ],
@@ -475,6 +474,18 @@ export default {
       axios.get(endpoint).then(response => {
         this.allContracts = response.data.rows;
         this.allContracts.forEach((contract)=>{
+          if(contract.estimated_amount) {
+              
+            let amount = contract.estimated_amount;
+            if (amount > 100000) {
+              contract.display_amount = "100kplus";
+
+            } else if (34000 <= amount && amount <= 100000) {
+              contract.display_amount = "34kto100k";
+            } else if (amount < 34000) {
+              contract.display_amount = "sub34k";
+            }
+          }
           if (contract.data_source == "PHL-Contracts") {
             contract.display_title = contract.opportunity_description;
             contract.url = 'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids';
@@ -484,6 +495,20 @@ export default {
               contract.solicitation_type = "RFP";
               contract.contract_category = "Services, Supplies, and Equipment";
             }
+
+            if (contract.nigp_codes && contract.nigp_codes.length > 0 ) {
+              
+              contract.nigp_codes.forEach(itemcode=> {
+                let newCode = this.nigpArray.find((code) => {
+                  code.code == itemcode;
+                });
+                if (newCode){
+                  contract.nigp_codes.push(newCode.item);
+                }
+              });
+            
+            }
+
           } else if (contract.data_source == "E-Contracts") {
             contract.display_title = contract.type_code + " contract for "+  contract.department;
             contract.url = 'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number;
@@ -503,9 +528,6 @@ export default {
       this.search = "";
     },
 
-    updateResultsList: function() {
-      return;
-    },
 
     sortContracts: function() {
 
@@ -513,10 +535,10 @@ export default {
       case 'Responses due':
         
         this.allContracts.sort((a, b) => {
-          if (a.bid_available_date < b.bid_available_date) {
+          if (a.bid_due_date < b.bid_due_date) {
             return -1;
           }
-          if (a.bid_available_date > b.bid_available_date) {
+          if (a.bid_due_date > b.bid_due_date) {
             return 1;
           }
           return 0;
@@ -549,10 +571,10 @@ export default {
       
       case 'Date posted':
         this.allContracts.sort((a, b) => {
-          if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
+          if (a.bid_post_date < b.bid_post_date) {
             return -1;
           }
-          if (a.open_bidding_begin_date > b.open_bidding_begin_date) {
+          if (a.bid_post_date > b.bid_post_date) {
             return 1;
           }
           return 0;
@@ -566,32 +588,35 @@ export default {
     },
 
     filterContracts: async function() {
-      this.contracts = await this.searchContracts(this.allContracts);
-      // this.contracts = this.sidebarFilter(filteredContracts);
+      let filteredContracts = await this.searchContracts(this.allContracts);
+      let solicitationContracts = await this.solicitationFilter(filteredContracts);
+      let sizeContracts = await this.sizeFilter(solicitationContracts);
+      this.contracts = await this.categoryFilter(sizeContracts);
 
     },
 
-    sidebarFilter: function(searchedContracts) {
+    solicitationFilter: function(filteredContracts) {
+      if (this.solicitation && this.solicitation.length > 0){
+        let test = filteredContracts.filter(contract=> this.solicitation.includes(contract.solicitation_type));
+        return test;
+      } 
+      return filteredContracts;
+    },
 
-      let contractFilters = [
-        ...this.contractTypeFilters,
-        ...this.solicitationFilters,
-        ...this.sizeFilters,
-      ];
+    categoryFilter: function(filteredContracts) {
+      if (this.contracttypes && this.contracttypes.length > 0){
+        let test = filteredContracts.filter(contract=> this.contracttypes.includes(contract.contract_category));
+        return test;
+      } 
+      return filteredContracts;
+    },
 
-      let finalContracts = [];
-
-      contractFilters.forEach(contractFilter => {
-        if (this[contractFilter.valueStore].length > 0 && this[contractFilter.valueStore].includes(contractFilter.matchValue)) {
-          finalContracts = searchedContracts.filter(contract => {
-            return this[contractFilter.valueStore].includes(contract[contractFilter.matchKey]);
-          });
-        }
-      });
-
-      return finalContracts;
-      
- 
+    sizeFilter: function(filteredContracts) {
+      if (this.sizes && this.sizes.length > 0){
+        let test = filteredContracts.filter(contract=> this.sizes.includes(contract.display_amount));
+        return test;
+      } 
+      return filteredContracts;
     },
 
 
@@ -599,29 +624,7 @@ export default {
       if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
         return this.$search(this.search, contracts, this.searchOptions);
       } 
-      
       return this.allContracts;
-      
-    },
-
-    getAmountTag(num) {
-      if (num > 100000) {
-        return {
-          tag: "Over 100k",
-          class: "bg-yellow color-grey",
-        };
-      } else if (num < 340000) {
-        return {
-          tag: "Under $34k",
-          class: "bg-vibrant-blue color-white",
-        };
-      } else if (34000 <= num <= 100000) {
-        return {
-          tag: "$34k-$100k",
-          class: "bg-dark-green color-grey",
-        };
-      }
-
     },
 
     scrollToTop () {
@@ -630,7 +633,6 @@ export default {
         behavior: 'smooth',
       });
     },
-
 
     getCorrespondingTag(tag) {
       if (tag !== "") {
@@ -677,6 +679,22 @@ export default {
             tag: "OPEN TO ANYONE",
             class: "bg-mint-green color-grey",
           };
+        case "sub34k":
+          return {
+            tag: "under 34k",
+            class: "bg-vibrant-blue color-white",
+          };
+        case "34kto100k":
+          return {
+            tag: "34k - 100k",
+            class: "bg-dark-green color-white",
+          };
+        case "100kplus":
+          return {
+            tag: "over 100k",
+            class: "bg-yellow color-grey",
+          };
+
         default:
           return{
             tag: tag,

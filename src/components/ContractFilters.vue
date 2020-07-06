@@ -22,7 +22,7 @@ import ContractFilters from 'ContractFilters.vue';
             type="checkbox"
             :value="filter.matchValue"
             :checked="isFilterChecked(filter.matchValue, 'contracttypes')"
-            @change="updateFilters('contracttypes', $event)"
+            @change="update('contracttypes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -43,7 +43,7 @@ import ContractFilters from 'ContractFilters.vue';
             type="checkbox"
             :value="filter.matchValue"
             :checked="isFilterChecked(filter.matchValue, 'sizes')"
-            @change="updateFilters('sizes', $event)"
+            @change="update('sizes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -69,7 +69,7 @@ import ContractFilters from 'ContractFilters.vue';
           type="checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'solicitation')"
-          @change="updateFilters('solicitation', $event)"
+          @change="update('solicitation', $event)"
         >
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
@@ -98,7 +98,7 @@ import ContractFilters from 'ContractFilters.vue';
           type="checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'competition')"
-          @change="updateFilters('competition', $event)"
+          @change="update('competition', $event)"
         >
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
@@ -187,7 +187,7 @@ export default {
       },
     },
 
-    updateResultsList: {
+    filterContracts: {
       type: Function,
       default: () => {
         return;
@@ -227,7 +227,7 @@ export default {
      * @param { String } filter name to eval
      * @param { Object } $event object
      */
-    updateFilters(filter, e) {
+    update(filter, e) {
       let newFilters = this[filter];
       if (e.target.checked) {
         if (!this[filter].includes(e.target.value)) {
@@ -237,7 +237,7 @@ export default {
         newFilters = this[filter].filter(item => item !== e.target.value);
       }
       this.$emit(`update:${filter}`, newFilters);
-      this.updateResultsList();
+      this.filterContracts();
     },
   },
 };
