@@ -30,7 +30,7 @@
         <button
           v-if="search.length > 0"
           class="clear-search-btn"
-          @click="clearAllFilters()"
+          @click="clearSearch()"
         >
           <i class="fas fa-times" />
         </button>
@@ -156,20 +156,20 @@
                   </div>
                   <div class="last-data">
                     <br>
-                    <b>Responses due:</b>
-                    <span>{{ contract.bid_due_date | showDate }}</span>
+                    <b>Responses due: </b>
+                    <span> {{ contract.bid_due_date | showDate }}</span>
                     <br>
                     <b>Posted by:</b>
-                    <span>{{ contract.department }}</span>
+                    <span> {{ contract.department }}</span>
                     <br>
-                    <b>Number:</b>
-                    <span>{{ contract.bid_number }}</span>
+                    <b>Number: </b>
+                    <span> {{ contract.bid_number }}</span>
                     <span
                       v-if="contract.alternate_ids[0]"
                     >(Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
-                    <b>Date posted:</b>
-                    <span>{{ contract.bid_post_date | showDate }}</span>
+                    <b>Date posted: </b>
+                    <span> {{ contract.bid_post_date | showDate }}</span>
                     <div class="see-more-link">
                       <a
                         v-if="contract.data_source == 'E-Contracts'"
@@ -524,6 +524,11 @@ export default {
       this.solicitation = [];
       this.contracttypes = [];
       this.sizes = [];
+      this.filterContracts();
+    },
+
+    clearSearch:function() {
+      this.search = "";
     },
 
     sortContracts: function() {
@@ -699,7 +704,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
 .main {
   width: 80rem;

@@ -90,6 +90,7 @@ import ContractFilters from 'ContractFilters.vue';
       <div class="filter-title bg-ghost-gray">
         <span>Filter by Competition</span>
       </div>
+
       <div
         v-for="filter in competitionFilters"
         :key="filter.label"
@@ -259,6 +260,10 @@ export default {
 
     input[type="checkbox"]:focus + label {
       border:2px solid black;
+    }
+
+    input[type="checkbox"]+ label {
+      border:2px solid white;
     }
 
     .hidden-checkbox {
