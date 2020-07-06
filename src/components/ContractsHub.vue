@@ -1,5 +1,6 @@
 <template>
   <div>
+    <AppHeader />
     <div class="main">
       <div class="intro-text">
         <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
@@ -264,10 +265,10 @@ import moment from "moment";
 import axios from "axios";
 import ContractFilters from "./ContractFilters.vue";
 import AppFooter from "./AppFooter.vue";
+import AppHeader from "./AppHeader.vue";
 import VuePaginate from "vue-paginate";
 import Vue from "vue";
 import VueFuse from "vue-fuse";
-import VueAnalytics from "vue-analytics";
 import VModal from "vue-js-modal";
 
 import nigpCodes from "../assets/nigp-codes.json";
@@ -275,17 +276,6 @@ import nigpCodes from "../assets/nigp-codes.json";
 Vue.use(VModal);
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
-
-/**
- * @desc google analytics, only enabled in production
- */
-Vue.use(VueAnalytics, {
-  id: "UA-860026-1",
-  debug: {
-    enabled: process.env.NODE_ENV === "development",
-    sendHitTask: process.env.NODE_ENV === "production",
-  },
-});
 
 const endpoint =
   "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
@@ -295,6 +285,7 @@ export default {
   components: {
     ContractFilters,
     AppFooter,
+    AppHeader,
   },
 
   filters: {
@@ -941,43 +932,6 @@ ul li a {
   text-decoration: none !important;
 }
 
-.page-title {
-  font-size: 2rem !important;
-}
-
-.site-header {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
-  z-index: 9000;
-}
-
-.app-nav {
-  position: sticky;
-  top: 73px;
-  z-index: 9000;
-}
-
-.page-title-container a {
-  text-decoration: none !important;
-}
-
-#demo-badge {
-  white-space: nowrap;
-  height: 22px;
-  width: 48px;
-  text-align: center;
-  line-height: 1.5rem;
-  display: inline-block;
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 800;
-  vertical-align: middle;
-  margin-left: 8px;
-  border-radius: 1px;
-  color: #000;
-  background: #ff8d00;
-}
 
 .disclaimer-modal {
   .vm--modal {

@@ -17,10 +17,11 @@
     "sass": "^1.26.9",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
-    "vue-analytics": "^5.22.1",
     "vue-fuse": "^2.2.1",
+    "vue-gtag": "^1.7.0",
     "vue-js-modal": "^2.0.0-rc.3",
-    "vue-paginate": "^3.5.0"
+    "vue-paginate": "^3.5.0",
+    "vue-router": "^3.3.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.0",
