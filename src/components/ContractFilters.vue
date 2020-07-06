@@ -21,8 +21,8 @@ import ContractFilters from 'ContractFilters.vue';
             :id="filter.label"
             type="checkbox"
             :value="filter.matchValue"
-            :checked="isFilterChecked(filter.matchValue, 'contracttype')"
-            @change="updateFilters('contracttype', $event)"
+            :checked="isFilterChecked(filter.matchValue, 'contracttypes')"
+            @change="update('contracttypes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -42,8 +42,8 @@ import ContractFilters from 'ContractFilters.vue';
             :id="filter.label"
             type="checkbox"
             :value="filter.matchValue"
-            :checked="isFilterChecked(filter.matchValue, 'size')"
-            @change="updateFilters('size', $event)"
+            :checked="isFilterChecked(filter.matchValue, 'sizes')"
+            @change="update('sizes', $event)"
           >
           <label :for="filter.label">
             <span>{{ filter.label }}</span>
@@ -69,7 +69,7 @@ import ContractFilters from 'ContractFilters.vue';
           type="checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'solicitation')"
-          @change="updateFilters('solicitation', $event)"
+          @change="update('solicitation', $event)"
         >
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
@@ -98,7 +98,7 @@ import ContractFilters from 'ContractFilters.vue';
           type="checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'competition')"
-          @change="updateFilters('competition', $event)"
+          @change="update('competition', $event)"
         >
         <label :for="filter.label">
           <span>{{ filter.label }}</span>
@@ -124,11 +124,11 @@ import ContractFilters from 'ContractFilters.vue';
       > &nbsp;
     </div>
     <input
-      class="clear-all-btn button"
+      class="button"
       type="button"
-      :disabled="!hasFilters"
       value="Clear All Filters"
-      @click="clearAllFilters(); $modal.hide('contract-filters')"
+      :disabled="noneSelected"
+      @click="clearAllFilters()"
     >
   </div>
 </template>
@@ -162,13 +162,13 @@ export default {
       },
     },
 
-    contracttype: {
+    contracttypes: {
       type: Array,
       default: () => {
         return [];
       },
     },
-    size: {
+    sizes: {
       type: Array,
       default: () => {
         return [];
@@ -187,7 +187,7 @@ export default {
       },
     },
 
-    updateResultsList: {
+    filterContracts: {
       type: Function,
       default: () => {
         return;
@@ -206,6 +206,11 @@ export default {
     vModal: {
       type: Boolean,
       default: false,
+    },
+  },
+  computed:{
+    noneSelected: function(){
+      return (this.sizes.length === 0 && this.contracttypes.length === 0 && this.solicitation.length === 0);
     },
   },
   methods: {
@@ -227,7 +232,7 @@ export default {
      * @param { String } filter name to eval
      * @param { Object } $event object
      */
-    updateFilters(filter, e) {
+    update(filter, e) {
       let newFilters = this[filter];
       if (e.target.checked) {
         if (!this[filter].includes(e.target.value)) {
@@ -237,7 +242,7 @@ export default {
         newFilters = this[filter].filter(item => item !== e.target.value);
       }
       this.$emit(`update:${filter}`, newFilters);
-      this.updateResultsList();
+      this.filterContracts();
     },
   },
 };

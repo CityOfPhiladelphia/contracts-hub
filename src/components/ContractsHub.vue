@@ -30,10 +30,10 @@
       <div class="contracts-container">
         <div class="side-bar">
           <contract-filters
-            :update-results-list="updateResultsList"
+            :filter-contracts="filterContracts"
             :clear-all-filters="clearAllFilters"
-            :contracttype.sync="contracttype"
-            :size.sync="size"
+            :contracttypes.sync="contracttypes"
+            :sizes.sync="sizes"
             :solicitation.sync="solicitation"
             :competition.sync="competition"
             v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
@@ -99,40 +99,41 @@
                     {{ contract.display_title }}
                   </a>
                 </h2>
-                <div class="contract-details">
-                  <div class="contract-tags">
-                    <div
-                      v-if="contract.contract_category && contract.contract_category !== null "
-                      class="contract-tag"
-                      :class="getCorrespondingTag(contract.contract_category).class"
-                    >
-                      {{ getCorrespondingTag(contract.contract_category).tag }}
-                    </div>
+                
+                <div class="contract-tags">
+                  <div
+                    v-if="contract.contract_category && contract.contract_category !== null "
+                    class="contract-tag"
+                    :class="getCorrespondingTag(contract.contract_category).class"
+                  >
+                    {{ getCorrespondingTag(contract.contract_category).tag }}
+                  </div>
               
-                    <div
-                      v-if="contract.estimated_amount && contract.estimated_amount !== null"
-                      class="contract-tag"
-                      :class="getAmountTag(contract.estimated_amount).class"
-                    >
-                      {{ getAmountTag(contract.estimated_amount).tag }}
-                    </div>
+                  <div
+                    v-if="contract.display_amount && contract.display_amount !== null"
+                    class="contract-tag"
+                    :class="getCorrespondingTag(contract.display_amount).class"
+                  >
+                    {{ getCorrespondingTag(contract.display_amount).tag }}
+                  </div>
 
-                    <div
-                      v-if="contract.solicitation_type && contract.solicitation_type !== null"
+                  <div
+                    v-if="contract.solicitation_type && contract.solicitation_type !== null"
 
-                      class="contract-tag"
-                      :class="getCorrespondingTag(contract.solicitation_type).class"
-                    >
-                      {{ getCorrespondingTag(contract.solicitation_type).tag }}
-                    </div>
-                    <!-- <div
+                    class="contract-tag"
+                    :class="getCorrespondingTag(contract.solicitation_type).class"
+                  >
+                    {{ getCorrespondingTag(contract.solicitation_type).tag }}
+                  </div>
+                  <!-- <div
 
                   class="contract-tag"
                   :class="getCorrespondingTag('Open to anyone').class"
                 >
                   {{ getCorrespondingTag('Open to anyone').tag }}
                 </div> -->
-                  </div>
+                </div>
+                <div class="contract-details">
                   <div class="description">
                     <div 
                       v-if="contract.data_source == 'E-Contracts'"
@@ -140,14 +141,14 @@
                       {{ contract.opportunity_description | truncate }}
                     </div>
                     <div 
-                      v-if="contract.data_source == 'PHL-Contracts'"
+                      v-if="contract.data_source == 'PHL-Contracts' && contract.new_nigp_codes.length > 0"
                     >
                       <!-- {{ contract.opportunity_description | truncate }} -->
+                      NIGP codes:
                       <div 
-                        v-for="code in contract.nigp_codes"
+                        v-for="code in contract.new_nigp_codes"
                         :key="code"
                       >
-                        NIGP Codes:<br>
                         {{ code }}
                       </div>
                     </div>
@@ -155,7 +156,7 @@
                   <div class="last-data">
                     <br>
                     <b>Responses due: </b>
-                    <span>{{ contract.bid_available_date | showDate }} </span>
+                    <span>{{ contract.bid_due_date | showDate }} </span>
                     <br>
                     <b>Posted by: </b>
                     <span>{{ contract.department }}</span>
@@ -165,7 +166,7 @@
                     <span v-if="contract.alternate_ids[0]"> (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
                     <b>Date posted: </b>
-                    <span>{{ contract.open_bidding_begin_date | showDate }}</span>
+                    <span>{{ contract.bid_post_date | showDate }}</span>
                     <div class="see-more-link">
                       <a
                         v-if="contract.data_source == 'E-Contracts'"
@@ -276,6 +277,9 @@ import VueFuse from "vue-fuse";
 import VueAnalytics from "vue-analytics";
 import VModal from 'vue-js-modal';
 
+import nigpCodes from "../assets/nigp-codes.json";
+
+
 Vue.use(VModal);
 Vue.use(VuePaginate);
 Vue.use(VueFuse);
@@ -303,7 +307,7 @@ export default {
 
   filters: {
     showDate: function(num) {
-      return moment(num).format("MMMM D, YYYY h:mm A");
+      return moment(num).zone(0).format("MMMM D, YYYY h:mm a");
     },
 
     truncate: function(val) {
@@ -313,11 +317,13 @@ export default {
       return val;        
     },
   },
+
   data: function() {
     return {
       contracts: [],
       allContracts: [],
       search: "",
+      nigpArray: nigpCodes,
 
       paginate: [ 'contracts' ],
       paginateStepLinks: {
@@ -344,63 +350,63 @@ export default {
       solicitationFilters: [{
         label: "Invitation to bid",
         sublabel: "Awarded to lowest-qualified bidder",
-        matchKey: "solicitation",
-        matchValue: "IFB",
-        valueStore: "solicitation",
+        matchKey: "solicitation_type",
+        matchValue: "BID",
+        valueStore: "solicitation_type",
       },
       {
         label: "Request for proposals",
         sublabel: "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
-        matchKey: "solicitation",
+        matchKey: "solicitation_type",
         matchValue: "RFP",
-        valueStore: "solicitation",
+        valueStore: "solicitation_type",
       },
       
       ],
-      size: [],
+      sizes: [],
       sizeFilters: [{
         label: "Under $34,000",
-        matchKey: "size",
-        matchValue: "sub-34k",
-        valueStore: "size",
+        matchKey: "display_amount",
+        matchValue: "sub34k",
+        valueStore: "sizes",
       },
       {
         label: "$34,000 - $100,000",
-        matchKey: "size",
-        matchValue: "34k-100k",
-        valueStore: "size",
+        matchKey: "display_amount",
+        matchValue: "34kto100k",
+        valueStore: "sizes",
       },
       {
         label: "Over $100,000",
-        matchKey: "size",
-        matchValue: "100k-plus",
-        valueStore: "size",
+        matchKey: "display_amount",
+        matchValue: "100kplus",
+        valueStore: "sizes",
       },
       ],
-      contracttype: [],
+      contracttypes: [],
       contractTypeFilters: [{
         label: "Concessions",
         matchKey: "contract_category",
-        matchValue: "concessions",
-        valueStore: "contracttype",
+        matchValue: "Concessions",
+        valueStore: "contracttypes",
       },
       {
         label: "Personal and professional services",
         matchKey: "contract_category",
-        matchValue: "PPS",
-        valueStore: "contracttype",
+        matchValue: "Professional Services",
+        valueStore: "contracttypes",
       },
       {
         label: "Public works",
         matchKey: "contract_category",
-        matchValue: "public-works",
-        valueStore: "contracttype",
+        matchValue: "Public Works",
+        valueStore: "contracttypes",
       },
       {
         label: "Services, supplies, and equipment (SS&E)",
         matchKey: "contract_category",
-        matchValue: "SSE",
-        valueStore: "contracttype",
+        matchValue: "Services, Supplies, and Equipment",
+        valueStore: "contracttypes",
       },
       ],
       sort: "Responses due",
@@ -416,14 +422,13 @@ export default {
         threshold: 0.4, 
         keys: [
           'contract_category',
-          'nigp_codes',
+          'new_nigp_codes',
           'display_title',
           'opportunity_description',
           'solicitation_type',
           'department',
           'bid_number',
           'type_code',
-          'contract_category',
         ],
       },
     };
@@ -431,18 +436,19 @@ export default {
   computed: {
     showNum: function() {
       if (this.contracts.length === this.allContracts.length) {
-        return `<p>Showing all ${this.contracts.length} available opporunities.</p>`;
+        return `<p>Showing all ${this.contracts.length} available opportunities.</p>`;
       }  else  
       if (this.contracts.length === 0) {
         return '<p>No opportunities found. Try adjusting your filters or search entry.</p>';
       } 
       return `<p>Showing ${this.contracts.length} out of ${this.allContracts.length} opportunities.</p>`;
     },
+
   },
 
   watch: {
     search () {
-      this.searchContracts();
+      this.filterContracts();
     },
   },
   mounted: function() {
@@ -453,6 +459,17 @@ export default {
       axios.get(endpoint).then(response => {
         this.allContracts = response.data.rows;
         this.allContracts.forEach((contract)=>{
+          if(contract.estimated_amount) {
+            let amount = contract.estimated_amount;
+            if (amount > 100000) {
+              contract.display_amount = "100kplus";
+            } else if (34000 <= amount && amount <= 100000) {
+              contract.display_amount = "34kto100k";
+            } else if (amount < 34000) {
+              contract.display_amount = "sub34k";
+            }
+          }
+
           if (contract.data_source == "PHL-Contracts") {
             contract.display_title = contract.opportunity_description;
             contract.url = 'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids';
@@ -462,6 +479,19 @@ export default {
               contract.solicitation_type = "RFP";
               contract.contract_category = "Services, Supplies, and Equipment";
             }
+
+            if (contract.nigp_codes && contract.nigp_codes.length > 0 ) {
+              contract.new_nigp_codes = [];
+              
+              contract.nigp_codes.forEach(itemcode=> {
+                let newCode = this.nigpArray.find(code => code.code == itemcode);
+                if (newCode){
+                  contract.new_nigp_codes.push(itemcode + " - " + newCode.item);
+                }
+              });
+            
+            }
+
           } else if (contract.data_source == "E-Contracts") {
             contract.display_title = contract.type_code + " contract for "+  contract.department;
             contract.url = 'https://philawx.phila.gov/econtract/default.aspx?LinkOppID=' + contract.bid_number;
@@ -479,11 +509,11 @@ export default {
 
     clearAllFilters: function() {
       this.search = "";
+      this.solicitation =[];
+      this.contracttypes = [];
+      this.sizes = [];
     },
 
-    updateResultsList: function() {
-      return;
-    },
 
     sortContracts: function() {
 
@@ -491,10 +521,10 @@ export default {
       case 'Responses due':
         
         this.allContracts.sort((a, b) => {
-          if (a.bid_available_date < b.bid_available_date) {
+          if (a.bid_due_date < b.bid_due_date) {
             return -1;
           }
-          if (a.bid_available_date > b.bid_available_date) {
+          if (a.bid_due_date > b.bid_due_date) {
             return 1;
           }
           return 0;
@@ -527,10 +557,10 @@ export default {
       
       case 'Date posted':
         this.allContracts.sort((a, b) => {
-          if (a.open_bidding_begin_date < b.open_bidding_begin_date) {
+          if (a.bid_post_date < b.bid_post_date) {
             return -1;
           }
-          if (a.open_bidding_begin_date > b.open_bidding_begin_date) {
+          if (a.bid_post_date > b.bid_post_date) {
             return 1;
           }
           return 0;
@@ -543,42 +573,44 @@ export default {
       }
     },
 
-    filterContracts: function() {
-      //
-      return;
+    filterContracts: async function() {
+      let filteredContracts = await this.searchContracts(this.allContracts);
+      let solicitationContracts = await this.solicitationFilter(filteredContracts);
+      let sizeContracts = await this.sizeFilter(solicitationContracts);
+      this.contracts = await this.categoryFilter(sizeContracts);
+
     },
 
-    searchContracts: function() {
+    solicitationFilter: function(filteredContracts) {
+      if (this.solicitation && this.solicitation.length > 0){
+        let test = filteredContracts.filter(contract=> this.solicitation.includes(contract.solicitation_type));
+        return test;
+      } 
+      return filteredContracts;
+    },
+
+    categoryFilter: function(filteredContracts) {
+      if (this.contracttypes && this.contracttypes.length > 0){
+        let test = filteredContracts.filter(contract=> this.contracttypes.includes(contract.contract_category));
+        return test;
+      } 
+      return filteredContracts;
+    },
+
+    sizeFilter: function(filteredContracts) {
+      if (this.sizes && this.sizes.length > 0){
+        let test = filteredContracts.filter(contract=> this.sizes.includes(contract.display_amount));
+        return test;
+      } 
+      return filteredContracts;
+    },
+
+
+    searchContracts: function(contracts) {
       if (this.search) { // there is nothing in the search bar -> return everything in filteredPosts
-        // this.contracts = [];
-        this.$search(this.search, this.allContracts, this.searchOptions).then(contracts => {
-          this.contracts = contracts;
-        });
-
-      } else {
-        this.contracts = this.allContracts;
-
-      }
-    },
-
-    getAmountTag(num) {
-      if (num > 100000) {
-        return {
-          tag: "Over 100k",
-          class: "bg-yellow color-grey",
-        };
-      } else if (num < 340000) {
-        return {
-          tag: "Under $34k",
-          class: "bg-vibrant-blue color-white",
-        };
-      } else if (34000 <= num <= 100000) {
-        return {
-          tag: "$34k-$100k",
-          class: "bg-dark-green color-grey",
-        };
-      }
-
+        return this.$search(this.search, contracts, this.searchOptions);
+      } 
+      return this.allContracts;
     },
 
     scrollToTop () {
@@ -587,7 +619,6 @@ export default {
         behavior: 'smooth',
       });
     },
-
 
     getCorrespondingTag(tag) {
       if (tag !== "") {
@@ -634,6 +665,22 @@ export default {
             tag: "OPEN TO ANYONE",
             class: "bg-mint-green color-grey",
           };
+        case "sub34k":
+          return {
+            tag: "under 34k",
+            class: "bg-vibrant-blue color-white",
+          };
+        case "34kto100k":
+          return {
+            tag: "34k - 100k",
+            class: "bg-dark-green color-white",
+          };
+        case "100kplus":
+          return {
+            tag: "over 100k",
+            class: "bg-yellow color-grey",
+          };
+
         default:
           return{
             tag: tag,
@@ -713,7 +760,7 @@ main {
 }
 
 .results-container {
-    padding: 20px;
+    padding: 0px 20px;
     width:70%;
 }
 
