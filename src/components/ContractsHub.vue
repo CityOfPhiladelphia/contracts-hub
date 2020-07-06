@@ -307,7 +307,6 @@ export default {
 
   filters: {
     showDate: function(num) {
-      
       return moment(num).zone(0).format("MMMM D, YYYY h:mm a");
     },
 
@@ -317,19 +316,8 @@ export default {
       } 
       return val;        
     },
-
-    showNIGP:function(val, nigpArray){
-      
-      let newCode = '';
-     
-      if (newCode){
-        return newCode.item;
-      } 
-
-      return val;
-     
-    },
   },
+  
   data: function() {
     return {
       contracts: [],
