@@ -272,7 +272,5 @@ export default {
       z-index: -1;        // avoid unintended clicks
       position: absolute; // don't affect other elements positioning
     }
-
-    
   }
 </style>
