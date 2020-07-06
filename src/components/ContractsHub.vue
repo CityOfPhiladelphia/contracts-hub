@@ -130,9 +130,9 @@
                   <!-- <div
 
                   class="contract-tag"
-                  :class="getCorrespondingTag('Open to anyone').class"
+                  :class="getCorrespondingTag('contract.lbe_only).class"
                 >
-                  {{ getCorrespondingTag('Open to anyone').tag }}
+                  {{ getCorrespondingTag('contract.lbe_only).tag }}
                   </div>-->
                 </div>
                 <div class="contract-details">
@@ -145,7 +145,6 @@
                     <div
                       v-if="contract.data_source == 'PHL-Contracts' && contract.new_nigp_codes.length > 0"
                     >
-                      <!-- {{ contract.opportunity_description | truncate }} -->
                       NIGP codes:
                       <div
                         v-for="code in contract.new_nigp_codes"
@@ -332,15 +331,15 @@ export default {
           label: "Open to local business entities only",
           sublabel:
             "Get ceritifed as a <a href='https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/get-certified-as-a-local-business-entity/'>local business entity</a>",
-          matchKey: "competition",
+          matchKey: "solicitation_type",
           matchValue: "LBE-only",
-          valueStore: "competition",
+          valueStore: "solicitation",
         },
         {
           label: "Open to anyone",
-          matchKey: "competition",
+          matchKey: "solicitation_type",
           matchValue: "open-to-all",
-          valueStore: "competition",
+          valueStore: "solicitation",
         },
       ],
       solicitation: [],
@@ -580,9 +579,7 @@ export default {
 
     filterContracts: async function() {
       let searchedContracts = await this.searchContracts(this.allContracts);
-      let solicitationContracts = await this.solicitationFilter(
-        searchedContracts,
-      );
+      let solicitationContracts = await this.solicitationFilter(searchedContracts);
       let sizeContracts = await this.sizeFilter(solicitationContracts);
       this.contracts = await this.categoryFilter(sizeContracts);
     },

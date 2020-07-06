@@ -20,6 +20,7 @@ import ContractFilters from 'ContractFilters.vue';
           <input
             :id="filter.label"
             type="checkbox"
+            class="hidden-checkbox"
             :value="filter.matchValue"
             :checked="isFilterChecked(filter.matchValue, 'contracttypes')"
             @change="update('contracttypes', $event)"
@@ -41,6 +42,7 @@ import ContractFilters from 'ContractFilters.vue';
           <input
             :id="filter.label"
             type="checkbox"
+            class="hidden-checkbox"
             :value="filter.matchValue"
             :checked="isFilterChecked(filter.matchValue, 'sizes')"
             @change="update('sizes', $event)"
@@ -67,6 +69,7 @@ import ContractFilters from 'ContractFilters.vue';
           :id="filter.label"
           :ref="`checkbox-${filter.matchValue}`"
           type="checkbox"
+          class="hidden-checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'solicitation')"
           @change="update('solicitation', $event)"
@@ -96,6 +99,7 @@ import ContractFilters from 'ContractFilters.vue';
           :id="filter.label"
           :ref="`checkbox-${filter.matchValue}`"
           type="checkbox"
+          class="hidden-checkbox"
           :value="filter.matchValue"
           :checked="isFilterChecked(filter.matchValue, 'competition')"
           @change="update('competition', $event)"
@@ -247,3 +251,23 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.checkbox-wrap {
+
+    user-select: none;
+
+    input[type="checkbox"]:focus + label {
+      border:2px solid black;
+    }
+
+    .hidden-checkbox {
+      display: block;
+      opacity: 0;         // hide it visually
+      z-index: -1;        // avoid unintended clicks
+      position: absolute; // don't affect other elements positioning
+    }
+
+    
+  }
+</style>
