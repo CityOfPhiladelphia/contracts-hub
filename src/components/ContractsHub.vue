@@ -989,6 +989,8 @@ ul li a {
     width: 100%;
   }
 }
-
+main {
+  margin-bottom: 0;
+}
 }
 </style>
