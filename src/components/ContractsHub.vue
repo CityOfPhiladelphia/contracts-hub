@@ -3,6 +3,9 @@
     <AppHeader />
     <div class="main">
       <div class="intro-text">
+        <div class="callout small-only">
+          It looks like you’re visiting this site on a mobile device. For the best experience, we recommend using Contracts Hub on a desktop.
+        </div>
         <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
         <p>
           You can find more opportunities on the
@@ -37,7 +40,7 @@
         </button>
       </div>
       <div class="contracts-container">
-        <div class="side-bar">
+        <div class="side-bar hide-on-small">
           <contract-filters
             :filter-contracts="filterContracts"
             :clear-all-filters="clearAllFilters"
@@ -291,7 +294,7 @@ export default {
   filters: {
     showDate: function(num) {
       return moment(num)
-        .zone(0)
+        .utcOffset(0)
         .format("MMMM D, YYYY h:mm a");
     },
 
@@ -960,13 +963,25 @@ ul li a {
 .sidebar-filters{
   display: block;
 }
-
+.small-only{
+  display: none;
+}
 @media (max-width: 480px) {
+
+  .hide-on-small {
+    display: none !important;
+  }
+
+  .intro-text {
+    margin: 1rem 1rem;
+  }
 
 .site-header {
   position: relative;
 }
-
+.small-only{
+  display: block;
+}
 .main {
   width: 100%;
   padding: 5px;
@@ -974,8 +989,6 @@ ul li a {
     width: 100%;
   }
 }
-.side-bar{
-  display:none;
-  }
+
 }
 </style>
