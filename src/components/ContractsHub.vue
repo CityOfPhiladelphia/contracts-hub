@@ -307,7 +307,8 @@ export default {
 
   filters: {
     showDate: function(num) {
-      return moment(num).format("MMMM D, YYYY");
+      
+      return moment(num).zone(0).format("MMMM D, YYYY h:mm a");
     },
 
     truncate: function(val) {
