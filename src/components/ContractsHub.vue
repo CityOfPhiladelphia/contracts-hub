@@ -317,7 +317,7 @@ export default {
       return val;        
     },
   },
-  
+
   data: function() {
     return {
       contracts: [],
@@ -422,14 +422,13 @@ export default {
         threshold: 0.4, 
         keys: [
           'contract_category',
-          'nigp_codes',
+          'new_nigp_codes',
           'display_title',
           'opportunity_description',
           'solicitation_type',
           'department',
           'bid_number',
           'type_code',
-          'contract_category',
         ],
       },
     };
@@ -461,17 +460,16 @@ export default {
         this.allContracts = response.data.rows;
         this.allContracts.forEach((contract)=>{
           if(contract.estimated_amount) {
-              
             let amount = contract.estimated_amount;
             if (amount > 100000) {
               contract.display_amount = "100kplus";
-
             } else if (34000 <= amount && amount <= 100000) {
               contract.display_amount = "34kto100k";
             } else if (amount < 34000) {
               contract.display_amount = "sub34k";
             }
           }
+          
           if (contract.data_source == "PHL-Contracts") {
             contract.display_title = contract.opportunity_description;
             contract.url = 'https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=' + contract.bid_number + '&parentUrl=activeBids';
