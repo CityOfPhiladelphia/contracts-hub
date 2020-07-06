@@ -44,9 +44,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .app-footer.anchor {
   position: fixed;
   bottom: 0;
+}
+@media (max-width: 480px) {
+  .app-footer.anchor{
+ position: relative !important;
+}
 }
 </style>
