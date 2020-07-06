@@ -141,15 +141,14 @@
                       {{ contract.opportunity_description | truncate }}
                     </div>
                     <div 
-                      v-if="contract.data_source == 'PHL-Contracts' && contract.nigp_codes.length > 0"
+                      v-if="contract.data_source == 'PHL-Contracts' && contract.new_nigp_codes.length > 0"
                     >
                       <!-- {{ contract.opportunity_description | truncate }} -->
                       NIGP codes:
                       <div 
-                        v-for="code in contract.nigp_codes"
+                        v-for="code in contract.new_nigp_codes"
                         :key="code"
                       >
-                        <br>
                         {{ code }}
                       </div>
                     </div>
@@ -320,9 +319,7 @@ export default {
 
     showNIGP:function(val, nigpArray){
       
-      let newCode = nigpArray.find((code) => {
-        code.code == val;
-      });
+      let newCode = '';
      
       if (newCode){
         return newCode.item;
@@ -497,13 +494,12 @@ export default {
             }
 
             if (contract.nigp_codes && contract.nigp_codes.length > 0 ) {
+              contract.new_nigp_codes = [];
               
               contract.nigp_codes.forEach(itemcode=> {
-                let newCode = this.nigpArray.find((code) => {
-                  code.code == itemcode;
-                });
+                let newCode = this.nigpArray.find(code => code.code == itemcode);
                 if (newCode){
-                  contract.nigp_codes.push(newCode.item);
+                  contract.new_nigp_codes.push(itemcode + " - " + newCode.item);
                 }
               });
             
