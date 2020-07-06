@@ -956,4 +956,26 @@ ul li a {
     float: right;
   }
 }
+
+.sidebar-filters{
+  display: block;
+}
+
+@media (max-width: 480px) {
+
+.site-header {
+  position: relative;
+}
+
+.main {
+  width: 100%;
+  padding: 5px;
+  .results-container{
+    width: 100%;
+  }
+}
+.side-bar{
+  display:none;
+  }
+}
 </style>
