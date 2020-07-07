@@ -1,4 +1,3 @@
-import ContractFilters from 'ContractFilters.vue';
 <template>
   <div
     class="sidebar-filters"
