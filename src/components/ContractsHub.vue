@@ -172,7 +172,8 @@
                   <div class="last-data">
                     <br>
                     <b>Responses due: </b>
-                    <span> {{ contract.bid_due_date | showDate }}</span>
+                    <span v-if="contract.data_source == 'E-Contracts'"> {{ contract.bid_due_date | showDateTime }}</span>
+                    <span v-if="contract.data_source == 'PHL-Contracts'"> {{ contract.bid_due_date | showDate }}</span>
                     <br>
                     <b>Posted by:</b>
                     <span> {{ contract.department }}</span>
@@ -184,7 +185,8 @@
                     > (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
                     <b>Date posted: </b>
-                    <span> {{ contract.bid_post_date | showDate }}</span>
+                    <span v-if="contract.data_source == 'E-Contracts'"> {{ contract.bid_post_date | showDate }}</span>
+                    <span v-if="contract.data_source == 'PHL-Contracts'"> {{ contract.bid_post_date | showDate }}</span>
                     <div class="see-more-link">
                       <a
                         v-if="contract.data_source == 'E-Contracts'"
@@ -303,15 +305,28 @@ export default {
   },
 
   filters: {
-    showDate: function(num) {
+    showDateTime: function(num) {
       return moment(num)
         .utcOffset(0)
         .format("MMMM D, YYYY h:mm a");
     },
 
+    showDate: function(num) {
+      return moment(num)
+        .utcOffset(0)
+        .format("MMMM D, YYYY");
+    },
+
     truncate: function(val) {
       if (val.length > 500) {
         return val.substring(0, 500) + "...";
+      }
+      return val;
+    },
+
+    truncateMobile: function(val) {
+      if (val.length > 250) {
+        return val.substring(0, 250) + "...";
       }
       return val;
     },
@@ -1008,12 +1023,20 @@ ul li a {
   .intro-text {
     margin: 1rem 1rem;
   }
-
+.see-more-link {
+  margin-top: 1rem;
+}
 .site-header {
   position: relative;
 }
 .mobile-only{
   display: block;
+}
+
+.sort-by {
+  label{
+    float:right;
+  }
 }
 .main {
   width: 100%;
