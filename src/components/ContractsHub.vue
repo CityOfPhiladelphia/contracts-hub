@@ -170,7 +170,7 @@
                     <span> {{ contract.bid_number }}</span>
                     <span
                       v-if="contract.alternate_ids[0]"
-                    >(Alternate ID: {{ contract.alternate_ids[0] }})</span>
+                    > (Alternate ID: {{ contract.alternate_ids[0] }})</span>
                     <br>
                     <b>Date posted: </b>
                     <span> {{ contract.bid_post_date | showDate }}</span>
