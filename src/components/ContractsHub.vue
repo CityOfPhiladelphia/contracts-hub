@@ -453,14 +453,14 @@ export default {
         .then(response => {
           this.allContracts = response.data.rows;
           this.allContracts.forEach(contract => {
-            contract.display_amount = "";
+            
             if (contract.estimated_amount) {
               let amount = contract.estimated_amount;
               if (amount > 100000) {
                 contract.display_amount = "100kplus";
               } else if (34000 <= amount && amount <= 100000) {
                 contract.display_amount = "34kto100k";
-              } else if (amount < 34000 || contract.type_code == "Miscellaneous Order" ) {
+              } else if (amount < 34000 ) {
                 contract.display_amount = "sub34k";
               }
             }
@@ -515,6 +515,10 @@ export default {
                 "https://philawx.phila.gov/econtract/default.aspx?LinkOppID=" +
                 contract.bid_number;
               contract.solicitation_type = "RFP";
+              
+              if (contract.type_code == "Miscellaneous Order") {
+                contract.display_amount = "sub34k";
+              }
             }
           });
           this.sortContracts();
