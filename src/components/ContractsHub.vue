@@ -3,7 +3,7 @@
     <AppHeader />
     <div class="main">
       <div class="intro-text">
-        <div class="callout small-only">
+        <div class="callout mobile-only">
           It looks like you’re visiting this site on a mobile device. For the best experience, we recommend using Contracts Hub on a desktop.
         </div>
         <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
@@ -52,6 +52,18 @@
           />
         </div>
         <div class="results-container">
+          <!-- <div class="button ">
+            show filters
+          </div> -->
+          <!-- <contract-filters
+            :filter-contracts="filterContracts"
+            :clear-all-filters="clearAllFilters"
+            :contracttypes.sync="contracttypes"
+            :sizes.sync="sizes"
+            :solicitation.sync="solicitation"
+            :competition.sync="competition"
+            v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
+          /> -->
           <div class="top-container">
             <div
               class="results-count"
@@ -149,7 +161,6 @@
                     <div
                       v-if="contract.data_source == 'PHL-Contracts' && contract.new_nigp_codes.length > 0"
                     >
-                      NIGP codes:
                       <div
                         v-for="code in contract.new_nigp_codes"
                         :key="code"
@@ -250,14 +261,14 @@
           href="https://www.phlcontracts.phila.gov/bso/"
         >Log in to PHLContracts</a>
       </p>
-      <div>
+      <!-- <div>
         <input
           type="button"
           value="Explore opportunities"
           class="continue-button button"
           @click="$modal.hide('howToUseModal')"
         >
-      </div>
+      </div> -->
     </modal>
     <AppFooter />
   </div>
@@ -515,7 +526,7 @@ export default {
                 "https://philawx.phila.gov/econtract/default.aspx?LinkOppID=" +
                 contract.bid_number;
               contract.solicitation_type = "RFP";
-              
+
               if (contract.type_code == "Miscellaneous Order") {
                 contract.display_amount = "sub34k";
               }
@@ -985,7 +996,7 @@ ul li a {
 .sidebar-filters{
   display: block;
 }
-.small-only{
+.mobile-only{
   display: none;
 }
 @media (max-width: 480px) {
@@ -1001,7 +1012,7 @@ ul li a {
 .site-header {
   position: relative;
 }
-.small-only{
+.mobile-only{
   display: block;
 }
 .main {
