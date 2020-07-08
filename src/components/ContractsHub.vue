@@ -472,13 +472,25 @@ export default {
                 "&parentUrl=activeBids";
 
               contract.solicitation_type = "BID";
-              if (
-                contract.contract_category == "Best Value" ||
-                contract.contract_category == "Request for Information"
-              ) {
+
+              if (contract.type_code == "BB") {
                 contract.solicitation_type = "RFP";
-                contract.contract_category =
-                  "Services, Supplies, and Equipment";
+                contract.contract_category = "Services, Supplies, and Equipment";
+              }
+
+              if (contract.type_code == "BP") {
+                contract.solicitation_type = "RFP";
+                contract.contract_category = "Public Works";
+              }
+
+              if (contract.type_code == "CR") {
+                contract.solicitation_type = "RFP";
+                contract.contract_category = "Concession";
+              }
+
+              if (contract.type_code == "RI") {
+                contract.solicitation_type = "RFP";
+                contract.contract_category = "Services, Supplies, and Equipment";
               }
 
               if (contract.nigp_codes && contract.nigp_codes.length > 0) {
@@ -746,7 +758,7 @@ main {
 }
 
 .contract-details {
-  width: 95%;
+  padding:0px 10px;
   margin: 0 auto;
 }
 
