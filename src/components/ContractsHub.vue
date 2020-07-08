@@ -453,13 +453,14 @@ export default {
         .then(response => {
           this.allContracts = response.data.rows;
           this.allContracts.forEach(contract => {
+            contract.display_amount = "";
             if (contract.estimated_amount) {
               let amount = contract.estimated_amount;
               if (amount > 100000) {
                 contract.display_amount = "100kplus";
               } else if (34000 <= amount && amount <= 100000) {
                 contract.display_amount = "34kto100k";
-              } else if (amount < 34000) {
+              } else if (amount < 34000 || contract.type_code == "Miscellaneous Order" ) {
                 contract.display_amount = "sub34k";
               }
             }
@@ -485,7 +486,7 @@ export default {
 
               if (contract.type_code == "CR") {
                 contract.solicitation_type = "RFP";
-                contract.contract_category = "Concession";
+                contract.contract_category = "Concessions";
               }
 
               if (contract.type_code == "RI") {
