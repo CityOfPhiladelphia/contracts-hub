@@ -413,6 +413,7 @@ export default {
       searchOptions: {
         shouldSort: false,
         threshold: 0.4,
+        tokenize: true,
         keys: [
           "contract_category",
           "new_nigp_codes",
@@ -876,6 +877,10 @@ main {
   color: black;
 }
 
+.bg-dark-grey{
+  background-color: #444444;
+}
+
 .bg-purple {
   background-color: #793d8f;
 }
@@ -989,8 +994,8 @@ ul li a {
     width: 100%;
   }
 }
-main {
-  margin-bottom: 0;
-}
+// main {
+//   margin-bottom: 0;
+// }
 }
 </style>
