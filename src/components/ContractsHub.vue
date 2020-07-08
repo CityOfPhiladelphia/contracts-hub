@@ -52,9 +52,9 @@
           />
         </div>
         <div class="results-container">
-          <div class="button">
+          <!-- <div class="button ">
             show filters
-          </div>
+          </div> -->
           <!-- <contract-filters
             :filter-contracts="filterContracts"
             :clear-all-filters="clearAllFilters"
