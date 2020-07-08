@@ -167,7 +167,7 @@
                     <span> {{ contract.department }}</span>
                     <br>
                     <b>Number: </b>
-                    <span> {{ contract.bid_number }}</span>
+                    <span> {{ contract.bid_number }} </span>
                     <span
                       v-if="contract.alternate_ids[0]"
                     > (Alternate ID: {{ contract.alternate_ids[0] }})</span>
