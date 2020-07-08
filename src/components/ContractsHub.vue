@@ -485,7 +485,7 @@ export default {
 
               if (contract.type_code == "CR") {
                 contract.solicitation_type = "RFP";
-                contract.contract_category = "Concession";
+                contract.contract_category = "Concessions";
               }
 
               if (contract.type_code == "RI") {
