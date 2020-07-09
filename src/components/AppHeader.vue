@@ -38,7 +38,7 @@ export default {
     border-bottom: 5px solid #25cef7;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 1000;
   }
   .page-title-container a {
     text-decoration: none !important;
