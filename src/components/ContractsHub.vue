@@ -498,7 +498,7 @@ export default {
             }
 
             if (contract.data_source == "PHL-Contracts") {
-              contract.display_title = contract.opportunity_description.string.charAt(0).toUpperCase();;
+              contract.display_title = contract.opportunity_description.string.charAt(0).toUpperCase();
               contract.url =
                 "https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=" +
                 contract.bid_number +
