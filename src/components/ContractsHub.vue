@@ -468,6 +468,12 @@ export default {
     search() {
       this.filterContracts();
     },
+    sizes() {
+      if (this.sizes.length > 0) {
+        this.sizes.sort();
+        this.track(this.sizes);
+      } 
+    },
   },
   mounted: function() {
     this.getAllContracts();
@@ -666,6 +672,13 @@ export default {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
+      });
+    },
+
+    track(sizes) {
+      this.$gtag.event("User is filtering by size",{
+        'event_category': "filter",
+        'event_label': sizes.toString(),
       });
     },
 
