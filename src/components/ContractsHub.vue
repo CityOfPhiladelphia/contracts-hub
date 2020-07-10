@@ -468,12 +468,12 @@ export default {
     search() {
       this.filterContracts();
     },
-    sizes() {
-      if (this.sizes.length > 0) {
-        this.sizes.sort();
-        this.track(this.sizes);
-      } 
-    },
+    // sizes() {
+    //   if (this.sizes.length > 0) {
+    //     this.sizes.sort();
+    //     this.track(this.sizes);
+    //   } 
+    // },
   },
   mounted: function() {
     this.getAllContracts();
