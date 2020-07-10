@@ -498,7 +498,7 @@ export default {
             }
 
             if (contract.data_source == "PHL-Contracts") {
-              contract.display_title = contract.opportunity_description.charAt(0).toUpperCase() +  contract.opportunity_description.slice(1);
+              contract.display_title = contract.opportunity_description;
               contract.url =
                 "https://www.phlcontracts.phila.gov/bso/external/bidDetail.sdo?bidId=" +
                 contract.bid_number +
@@ -672,13 +672,6 @@ export default {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
-      });
-    },
-
-    track(sizes) {
-      this.$gtag.event("User is filtering by size",{
-        'event_category': "filter",
-        'event_label': sizes.toString(),
       });
     },
 
