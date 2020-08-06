@@ -6,17 +6,26 @@
         <div class="callout mobile-only">
           It looks like you’re visiting this site on a mobile device. For the best experience, we recommend using Contracts Hub on a desktop.
         </div>
-        <p>To help you locate an opportunity for your business, Contracts Hub searches multiple websites through a single interface.</p>
-        <p>
-          You can find more opportunities on the
-          <a href="https://www.phila.gov/rfp/">City’s RFI and RFP listing.</a>
-        </p>
-        <p>
-          For more details on how to find and apply to contract opportunities, see
+        <div class="intro-line">
+          <h2><b>Search multiple websites to find opportunities for your business.</b></h2>
+          <div 
+            href="#"
+            class="button"
+            @click="$modal.show('howToUseModal')"
+          >
+            How to use
+          </div>
+        </div>
+        <div class="learn-more">
+          <h4>Learn more about payments, contract types, and resources.</h4>
           <a
-            href="https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/do-business-with-the-city/"
-          >how to do business with the City.</a>
-        </p>
+            href="https://www.phila.gov/services/business-self-employment/bidding-on-a-city-contract/"
+            class="button"
+            target="_blank"
+          >
+            Vendor information
+          </a>
+        </div>
       </div>
       <div class="search">
         <input
@@ -50,10 +59,14 @@
             :competition.sync="competition"
             v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
           />
+          <div class="additional">
+            <h4><b>Didn't find what you need?</b></h4>
+            <h6>See <a href="https://www.phila.gov/rfp/pages/default.aspx">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
+          </div>
         </div>
         <div class="results-container">
-          <!-- <div class="button ">
-            show filters
+          <!-- <div class="button small-only">
+            Show filters
           </div> -->
           <!-- <contract-filters
             :filter-contracts="filterContracts"
@@ -366,7 +379,7 @@ export default {
       solicitationFilters: [
         {
           label: "Invitation to bid",
-          sublabel: "Awarded to lowest-qualified bidder",
+          sublabel: "Awarded to lowest qualified bidder",
           matchKey: "solicitation_type",
           matchValue: "BID",
           valueStore: "solicitation_type",
@@ -374,7 +387,7 @@ export default {
         {
           label: "Request for proposals",
           sublabel:
-            "Evaluated under <a href='https://www.phila.gov/documents/best-value-guidelines/'> best value guidelines</a>",
+            "Evaluated by cost and quality",
           matchKey: "solicitation_type",
           matchValue: "RFP",
           valueStore: "solicitation_type",
@@ -389,7 +402,7 @@ export default {
           valueStore: "sizes",
         },
         {
-          label: "$34,000 - $100,000",
+          label: "$34,000⁠–$100,000",
           matchKey: "display_amount",
           matchValue: "34kto100k",
           valueStore: "sizes",
@@ -410,7 +423,7 @@ export default {
           valueStore: "contracttypes",
         },
         {
-          label: "Personal and professional services",
+          label: "Professional services",
           matchKey: "contract_category",
           matchValue: "Professional Services",
           valueStore: "contracttypes",
@@ -760,6 +773,35 @@ main {
 
 .intro-text {
   margin: 3rem 0;
+  display: flex;
+
+  .intro-line {
+    width: 65%;
+    border-right: solid 5px #f0f0f0;
+
+    .button {
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+  }
+
+  .learn-more {
+    padding: 1rem;
+    width:35%;
+
+    .button {
+      margin-top: 1.5rem;
+      background-color: white;
+      border: solid #0f4d90 2px;
+      color: #0f4d90;
+      text-decoration: none !important;
+
+      &:hover {
+        background-color: #0f4d90;
+        color: white;
+      }
+    }
+  }
 }
 
 .clear-search-btn {
@@ -801,6 +843,11 @@ main {
 
 .contracts-container {
   display: flex;
+  .additional{
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: solid 3px #f0f0f0;
+  }
 }
 
 .contracts-list ul {
@@ -1028,6 +1075,24 @@ ul li a {
 
   .intro-text {
     margin: 1rem 1rem;
+    flex-direction: column;
+    .intro-line {
+      width: 100%;
+    border: none;
+    .button {
+      margin: 0 auto;
+    }
+    }
+
+    .learn-more {
+      width: 100%;
+      padding: 0;
+      margin-top: 1rem;
+
+      .button {
+        margin: 0 auto 1rem auto;
+      }
+    }
   }
 .see-more-link {
   margin-top: 1rem;
@@ -1039,11 +1104,19 @@ ul li a {
   display: block;
 }
 
-.sort-by {
-  label{
-    float:right;
-  }
+.top-container {
+  flex-direction: column-reverse;
 }
+
+.search {
+  margin: 1rem;
+}
+
+// .sort-by {
+//   label{
+//     float:right;
+//   }
+// }
 .main {
   width: 100%;
   padding: 5px;
