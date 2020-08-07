@@ -780,14 +780,17 @@ main {
     border-right: solid 5px #f0f0f0;
 
     .button {
+      margin-top: 1rem;
       padding-right: 20px;
       padding-left: 20px;
     }
   }
 
   .learn-more {
-    padding: 1rem;
+    padding: 2rem;
     width:35%;
+    // margin: 2rem;
+    padding: 1rem 4rem;
 
     .button {
       margin-top: 1.5rem;
@@ -844,8 +847,8 @@ main {
 .contracts-container {
   display: flex;
   .additional{
-    margin-top: 2rem;
-    padding-top: 2rem;
+    margin-top: 3rem;
+    padding-top: 3rem;
     border-top: solid 3px #f0f0f0;
   }
 }
