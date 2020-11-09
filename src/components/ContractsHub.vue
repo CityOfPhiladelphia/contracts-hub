@@ -64,7 +64,7 @@
             <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contracts-legislation-unit/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
           </div>
         </div>
-        <div class="results-container column">
+        <div class="results-container">
           <!-- <div class="button small-only">
             Show filters
           </div> -->
@@ -77,7 +77,7 @@
             :competition.sync="competition"
             v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
           /> -->
-          <div class="top-container row">
+          <div class="top-container">
             <div
               class="results-count"
               v-html="showNum"
