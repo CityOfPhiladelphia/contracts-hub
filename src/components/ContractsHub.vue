@@ -1088,7 +1088,7 @@ ul li a {
     border: none;
     .button {
       margin: 0 auto;
-    }
+      }
     }
 
     .learn-more {
