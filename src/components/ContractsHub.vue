@@ -68,15 +68,7 @@
           <!-- <div class="button small-only">
             Show filters
           </div> -->
-          <!-- <contract-filters
-            :filter-contracts="filterContracts"
-            :clear-all-filters="clearAllFilters"
-            :contracttypes.sync="contracttypes"
-            :sizes.sync="sizes"
-            :solicitation.sync="solicitation"
-            :competition.sync="competition"
-            v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
-          /> -->
+          
           <div class="top-container">
             <div
               class="results-count"
