@@ -64,7 +64,7 @@
             <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contracts-legislation-unit/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
           </div>
         </div>
-        <div class="results-container">
+        <div class="results-container column">
           <!-- <div class="button small-only">
             Show filters
           </div> -->
@@ -77,7 +77,7 @@
             :competition.sync="competition"
             v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
           /> -->
-          <div class="top-container">
+          <div class="top-container row">
             <div
               class="results-count"
               v-html="showNum"
@@ -123,7 +123,7 @@
               <div
                 v-for="contract in paginated('contracts')"
                 :key="contract.bid_number"
-                class="single-contract"
+                class="single-contract column"
               >
                 <h2 class="contract-header bg-ghost-gray">
                   <a
@@ -518,6 +518,7 @@ export default {
                 "&parentUrl=activeBids";
 
               contract.solicitation_type = "BID";
+              contract.display = true;
 
               if (contract.type_code == "BB") {
                 contract.solicitation_type = "RFP";
@@ -554,6 +555,7 @@ export default {
                 });
               }
             } else if (contract.data_source == "E-Contracts") {
+              contract.display = true;
               contract.display_title =
                 contract.type_code + " contract for " + contract.department;
               contract.url =
@@ -763,8 +765,9 @@ export default {
 
 <style  lang="scss">
 .main {
-  width: 80rem;
+  // width: 80rem;
   margin: 0 auto;
+  padding: 0 5rem 0 5rem;
 }
 
 main {
@@ -1070,7 +1073,8 @@ ul li a {
 .mobile-only{
   display: none;
 }
-@media (max-width: 480px) {
+
+@media (max-width: 750px) {
 
   .hide-on-small {
     display: none !important;
