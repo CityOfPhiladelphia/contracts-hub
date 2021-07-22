@@ -563,7 +563,7 @@ export default {
           this.sortContracts();
         })
         .then(() => {
-          this.contracts = this.allContracts;
+          this.contracts = this.dateFilter(this.allContracts);
         })
         .catch(e => {
           window.console.log(e);
@@ -637,6 +637,7 @@ export default {
       let searchedContracts = await this.searchContracts(this.allContracts);
       let solicitationContracts = await this.solicitationFilter(searchedContracts);
       let sizeContracts = await this.sizeFilter(solicitationContracts);
+      // let dateContracts = await this.dateFilter(sizeContracts);
       this.contracts = await this.categoryFilter(sizeContracts);
     },
 
@@ -664,6 +665,16 @@ export default {
           this.sizes.includes(contract.display_amount),
         );
       }
+      return filteredContracts;
+    },
+
+    dateFilter: function(filteredContracts) {
+      let today = moment( new Date()).unix();
+      console.log(today);
+      filteredContracts = filteredContracts.filter(
+        contract =>
+          moment(contract.bid_due_date).unix() >= today, 
+      );
       return filteredContracts;
     },
 
