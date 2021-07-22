@@ -670,7 +670,7 @@ export default {
 
     dateFilter: function(filteredContracts) {
       let today = moment( new Date()).unix();
-      console.log(today);
+      // console.log(today);
       filteredContracts = filteredContracts.filter(
         contract =>
           moment(contract.bid_due_date).unix() >= today, 
