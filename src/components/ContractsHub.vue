@@ -669,7 +669,7 @@ export default {
     },
 
     dateFilter: function(filteredContracts) {
-      let today = moment( new Date()).unix();
+      let today = moment().subtract(1, 'd').unix();
       // console.log(today);
       filteredContracts = filteredContracts.filter(
         contract =>
