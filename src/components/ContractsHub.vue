@@ -61,7 +61,7 @@
           />
           <div class="additional">
             <h4><b>Didn't find what you need?</b></h4>
-            <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contracts-legislation-unit/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
+            <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
           </div>
         </div>
         <div class="results-container">
