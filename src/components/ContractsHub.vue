@@ -312,13 +312,13 @@ export default {
   filters: {
     showDateTime: function(num) {
       return moment(num)
-        .utcOffset(0)
+        .utcOffset(-240)
         .format("MMMM D, YYYY h:mm a");
     },
 
     showDate: function(num) {
       return moment(num)
-        .utcOffset(0)
+        .utcOffset(-240)
         .format("MMMM D, YYYY");
     },
 
