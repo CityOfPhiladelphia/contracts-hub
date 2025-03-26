@@ -61,22 +61,14 @@
           />
           <div class="additional">
             <h4><b>Didn't find what you need?</b></h4>
-            <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contracts-legislation-unit/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
+            <h6>See <a href="https://www.phila.gov/departments/office-of-the-chief-administrative-officer/contract-opportunities-with-special-application-processes/">additional opportunities</a><br>(RFIs and quasi-governmental RFPs not posted on Contracts Hub)</h6>
           </div>
         </div>
         <div class="results-container">
           <!-- <div class="button small-only">
             Show filters
           </div> -->
-          <!-- <contract-filters
-            :filter-contracts="filterContracts"
-            :clear-all-filters="clearAllFilters"
-            :contracttypes.sync="contracttypes"
-            :sizes.sync="sizes"
-            :solicitation.sync="solicitation"
-            :competition.sync="competition"
-            v-bind="{ contractTypeFilters, sizeFilters, solicitationFilters, competitionFilters, vModal: false }"
-          /> -->
+          
           <div class="top-container">
             <div
               class="results-count"
@@ -123,7 +115,7 @@
               <div
                 v-for="contract in paginated('contracts')"
                 :key="contract.bid_number"
-                class="single-contract"
+                class="single-contract column"
               >
                 <h2 class="contract-header bg-ghost-gray">
                   <a
@@ -320,13 +312,13 @@ export default {
   filters: {
     showDateTime: function(num) {
       return moment(num)
-        .utcOffset(0)
+        .utcOffset(-240)
         .format("MMMM D, YYYY h:mm a");
     },
 
     showDate: function(num) {
       return moment(num)
-        .utcOffset(0)
+        .utcOffset(-240)
         .format("MMMM D, YYYY");
     },
 
@@ -518,6 +510,7 @@ export default {
                 "&parentUrl=activeBids";
 
               contract.solicitation_type = "BID";
+              contract.display = true;
 
               if (contract.type_code == "BB") {
                 contract.solicitation_type = "RFP";
@@ -554,6 +547,7 @@ export default {
                 });
               }
             } else if (contract.data_source == "E-Contracts") {
+              contract.display = true;
               contract.display_title =
                 contract.type_code + " contract for " + contract.department;
               contract.url =
@@ -569,7 +563,7 @@ export default {
           this.sortContracts();
         })
         .then(() => {
-          this.contracts = this.allContracts;
+          this.contracts = this.dateFilter(this.allContracts);
         })
         .catch(e => {
           window.console.log(e);
@@ -643,6 +637,7 @@ export default {
       let searchedContracts = await this.searchContracts(this.allContracts);
       let solicitationContracts = await this.solicitationFilter(searchedContracts);
       let sizeContracts = await this.sizeFilter(solicitationContracts);
+      // let dateContracts = await this.dateFilter(sizeContracts);
       this.contracts = await this.categoryFilter(sizeContracts);
     },
 
@@ -670,6 +665,16 @@ export default {
           this.sizes.includes(contract.display_amount),
         );
       }
+      return filteredContracts;
+    },
+
+    dateFilter: function(filteredContracts) {
+      let today = moment().subtract(1, 'd').unix();
+      // console.log(today);
+      filteredContracts = filteredContracts.filter(
+        contract =>
+          moment(contract.bid_due_date).unix() >= today, 
+      );
       return filteredContracts;
     },
 
@@ -763,8 +768,9 @@ export default {
 
 <style  lang="scss">
 .main {
-  width: 80rem;
+  // width: 80rem;
   margin: 0 auto;
+  padding: 0 5rem 0 5rem;
 }
 
 main {
@@ -1070,7 +1076,8 @@ ul li a {
 .mobile-only{
   display: none;
 }
-@media (max-width: 480px) {
+
+@media (max-width: 750px) {
 
   .hide-on-small {
     display: none !important;
@@ -1084,7 +1091,7 @@ ul li a {
     border: none;
     .button {
       margin: 0 auto;
-    }
+      }
     }
 
     .learn-more {
