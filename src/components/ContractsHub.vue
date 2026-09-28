@@ -490,6 +490,7 @@ export default {
         .then(response => {
           this.allContracts = response.data.rows;
           this.allContracts.forEach(contract => {
+            contract.new_nigp_codes = [];
             
             if (contract.estimated_amount) {
               let amount = contract.estimated_amount;
@@ -531,11 +532,16 @@ export default {
                 contract.solicitation_type = "RFP";
                 contract.contract_category = "Services, Supplies, and Equipment";
               }
-
-              if (contract.nigp_codes && contract.nigp_codes.length > 0) {
-                contract.new_nigp_codes = [];
-
-                contract.nigp_codes.forEach(itemcode => {
+              let nigpCodes = contract.nigp_codes;
+              if (typeof nigpCodes == "string") {
+                try {
+                  nigpCodes = JSON.parse(nigpCodes);
+                } catch (error) {
+                  nigpCodes = [];
+                }
+              }
+              if (Array.isArray(nigpCodes)) {
+                nigpCodes.forEach(itemcode => {
                   let newCode = this.nigpArray.find(
                     code => code.code == itemcode,
                   );
@@ -546,6 +552,7 @@ export default {
                   }
                 });
               }
+
             } else if (contract.data_source == "E-Contracts") {
               contract.display = true;
               contract.display_title =
