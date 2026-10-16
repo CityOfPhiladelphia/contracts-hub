@@ -39,4 +39,12 @@ module.exports = {
   parserOptions: {
     parser: "@babel/eslint-parser",
   },
+  overrides: [
+    {
+      files: [ "tests/**/*.spec.js" ],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };

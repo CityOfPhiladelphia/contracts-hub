@@ -17,6 +17,7 @@ jobs:
       - name: Build project files
         run: |
           npm ci
+          npm run test:unit
           npm run build
       - name: Deploy to s3
         env: 
