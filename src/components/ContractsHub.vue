@@ -301,6 +301,27 @@ Vue.use(VueFuse);
 const endpoint =
   "https://phl.carto.com/api/v2/sql?q=select+*+from+contract_opportunities";
 
+// Philadelphia time, switching between EST and EDT for daylight saving
+const philadelphiaParts = (value, options) => {
+  const parts = {};
+  new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", ...options })
+    .formatToParts(new Date(value))
+    .forEach(part => {
+      parts[part.type] = part.value;
+    });
+  return parts;
+};
+
+const philadelphiaDate = value => {
+  const { month, day, year } = philadelphiaParts(value, { month: "long", day: "numeric", year: "numeric" });
+  return `${month} ${day}, ${year}`;
+};
+
+const philadelphiaTime = value => {
+  const { hour, minute, dayPeriod } = philadelphiaParts(value, { hour: "numeric", minute: "2-digit", hour12: true });
+  return `${hour}:${minute} ${dayPeriod.toLowerCase()}`;
+};
+
 export default {
   name: "ContractsHub",
   components: {
@@ -311,15 +332,11 @@ export default {
 
   filters: {
     showDateTime: function(num) {
-      return moment(num)
-        .utcOffset(-240)
-        .format("MMMM D, YYYY h:mm a");
+      return `${philadelphiaDate(num)} ${philadelphiaTime(num)}`;
     },
 
     showDate: function(num) {
-      return moment(num)
-        .utcOffset(-240)
-        .format("MMMM D, YYYY");
+      return philadelphiaDate(num);
     },
 
     truncate: function(val) {
@@ -570,7 +587,9 @@ export default {
           this.sortContracts();
         })
         .then(() => {
-          this.contracts = this.dateFilter(this.allContracts);
+          // Drop expired opportunities once, so the count and every filter start from the same list
+          this.allContracts = this.dateFilter(this.allContracts);
+          this.contracts = this.allContracts;
         })
         .catch(e => {
           window.console.log(e);
@@ -644,7 +663,6 @@ export default {
       let searchedContracts = await this.searchContracts(this.allContracts);
       let solicitationContracts = await this.solicitationFilter(searchedContracts);
       let sizeContracts = await this.sizeFilter(solicitationContracts);
-      // let dateContracts = await this.dateFilter(sizeContracts);
       this.contracts = await this.categoryFilter(sizeContracts);
     },
 
@@ -677,7 +695,6 @@ export default {
 
     dateFilter: function(filteredContracts) {
       let today = moment().subtract(1, 'd').unix();
-      // console.log(today);
       filteredContracts = filteredContracts.filter(
         contract =>
           moment(contract.bid_due_date).unix() >= today, 
