@@ -237,15 +237,30 @@ describe("ContractsHub", () => {
       expect(shownBids()).toEqual([ "pro-rfp", "small-bid", "works-rfp" ]);
     });
 
-    // Known bug: filterContracts starts from every contract, including expired ones.
-    // TODO: unskip once the fix is merged.
-    it.skip("keeps expired contracts hidden after filtering", async () => {
-      wrapper = await mountWithRows([
-        phlContract({ bid_number: "open" }),
-        phlContract({ bid_number: "expired", bid_due_date: inDays(-3) }),
-      ]);
-      await wrapper.vm.filterContracts();
-      expect(shownBids()).toEqual([ "open" ]);
+    describe("with expired contracts in the data", () => {
+      beforeEach(async () => {
+        wrapper = await mountWithRows([
+          phlContract({ bid_number: "open" }),
+          phlContract({ bid_number: "expired", bid_due_date: inDays(-3) }),
+        ]);
+      });
+
+      it("counts only open contracts", () => {
+        expect(wrapper.vm.showNum).toContain("Showing all 1 available opportunities");
+      });
+
+      it("keeps expired contracts hidden after filtering", async () => {
+        await wrapper.vm.filterContracts();
+        expect(shownBids()).toEqual([ "open" ]);
+      });
+
+      it("keeps expired contracts hidden after clearing filters", async () => {
+        wrapper.setData({ sizes: [ "sub34k" ]});
+        await wrapper.vm.filterContracts();
+        await wrapper.vm.clearAllFilters();
+        await flushPromises();
+        expect(shownBids()).toEqual([ "open" ]);
+      });
     });
   });
 
@@ -340,10 +355,28 @@ describe("ContractsHub", () => {
       expect(showDateTime("2026-07-04T16:00:00Z")).toBe("July 4, 2026 12:00 pm");
     });
 
-    // Known bug: the UTC offset is hardcoded to -4 hours (EDT), so winter times are an hour late.
-    // TODO: unskip once the fix is merged.
-    it.skip("formats dates in Philadelphia time during standard time", () => {
+    it("formats dates in Philadelphia time during standard time", () => {
       expect(showDateTime("2026-01-15T17:00:00Z")).toBe("January 15, 2026 12:00 pm");
+    });
+
+    // eContract Philly deadlines are 5:00 pm Philadelphia time
+    it.each([
+      [ "2026-10-19T21:00:00Z", "October 19, 2026 5:00 pm" ],
+      [ "2026-11-16T22:00:00Z", "November 16, 2026 5:00 pm" ],
+    ])("shows the %s deadline as %s", (value, expected) => {
+      expect(showDateTime(value)).toBe(expected);
+    });
+
+    // PHLContracts dates are midnight Philadelphia time
+    it.each([
+      [ "2026-10-14T04:00:00Z", "October 14, 2026" ],
+      [ "2026-12-01T05:00:00Z", "December 1, 2026" ],
+    ])("shows the %s date as %s", (value, expected) => {
+      expect(showDate(value)).toBe(expected);
+    });
+
+    it("formats morning times", () => {
+      expect(showDateTime("2026-03-02T14:30:00Z")).toBe("March 2, 2026 9:30 am");
     });
   });
 });
