@@ -26,7 +26,7 @@ const router = new VueRouter({
 
 Vue.use(VueGtag, {
   config : {
-    id: 'UA-860026-1',
+    id: 'UA-860026-1', //TODO: The UA prefix suggests this is a deprecated Google Analytics property. Consider migrating to GA4.
   },
 }, router);
 
