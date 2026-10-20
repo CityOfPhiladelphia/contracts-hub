@@ -490,6 +490,11 @@ export default {
     search() {
       this.filterContracts();
     },
+    // Start new results on page 1. vue-paginate sets the page to -1 when a list is empty and
+    // never resets it, so results after an empty filter wouldn't show until the page changed.
+    contracts() {
+      this.paginate.contracts.page = 0;
+    },
     // sizes() {
     //   if (this.sizes.length > 0) {
     //     this.sizes.sort();
@@ -508,7 +513,18 @@ export default {
           this.allContracts = response.data.rows;
           this.allContracts.forEach(contract => {
             contract.new_nigp_codes = [];
-            
+
+            // Carto returns alternate IDs as a JSON string, such as '["3976"]'
+            let alternateIds = contract.alternate_ids;
+            if (typeof alternateIds == "string") {
+              try {
+                alternateIds = JSON.parse(alternateIds);
+              } catch (error) {
+                alternateIds = [];
+              }
+            }
+            contract.alternate_ids = Array.isArray(alternateIds) ? alternateIds : [];
+
             if (contract.estimated_amount) {
               let amount = contract.estimated_amount;
               if (amount > 100000) {
