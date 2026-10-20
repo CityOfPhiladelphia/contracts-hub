@@ -37,6 +37,6 @@ module.exports = {
     "vue/attributes-order": "error",
   },
   parserOptions: {
-    parser: "babel-eslint",
+    parser: "@babel/eslint-parser",
   },
 };
