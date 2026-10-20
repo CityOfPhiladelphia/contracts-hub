@@ -1,7 +1,7 @@
 // These tests were written with the help of AI. They were reviewed by the person who
 // committed the code.
 
-import { shallowMount } from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import axios from "axios";
 import moment from "moment";
 import ContractsHub from "@/components/ContractsHub.vue";
@@ -21,6 +21,7 @@ const phlContract = (overrides = {}) => ({
   nigp_codes: [],
   bid_due_date: inDays(10),
   bid_post_date: inDays(-5),
+  alternate_ids: "[]",
   ...overrides,
 });
 
@@ -34,6 +35,7 @@ const eContract = (overrides = {}) => ({
   estimated_amount: 200000,
   bid_due_date: inDays(10),
   bid_post_date: inDays(-5),
+  alternate_ids: "[]",
   ...overrides,
 });
 
@@ -42,6 +44,16 @@ const flushPromises = () => new Promise(resolve => setTimeout(resolve));
 async function mountWithRows(rows) {
   axios.get.mockResolvedValue({ data: { rows }});
   const wrapper = shallowMount(ContractsHub);
+  await flushPromises();
+  return wrapper;
+}
+
+// Renders the real paginate component and contract list, which shallowMount stubs out
+async function renderWithRows(rows) {
+  axios.get.mockResolvedValue({ data: { rows }});
+  const wrapper = mount(ContractsHub, {
+    stubs: [ "AppHeader", "AppFooter", "ContractFilters", "modal" ],
+  });
   await flushPromises();
   return wrapper;
 }
@@ -164,6 +176,32 @@ describe("ContractsHub", () => {
     });
   });
 
+  describe("alternate IDs", () => {
+    it.each([
+      [ "a JSON string", "[\"3976\"]", [ "3976" ]],
+      [ "an array", [ "3976" ], [ "3976" ]],
+      [ "an empty JSON list", "[]", []],
+      [ "a string that isn't valid JSON", "3976", []],
+      [ "missing", null, []],
+    ])("reads alternate IDs given as %s", async (_, alternateIds, expected) => {
+      const wrapper = await mountWithRows([ phlContract({ alternate_ids: alternateIds }) ]);
+      expect(wrapper.vm.allContracts[0].alternate_ids).toEqual(expected);
+    });
+
+    it("shows the alternate ID only when there is one", async () => {
+      const wrapper = await renderWithRows([
+        phlContract({ bid_number: "with-id", alternate_ids: "[\"3976\"]" }),
+        eContract({ bid_number: "without-id", alternate_ids: "[]" }),
+      ]);
+      const text = wrapper.findAll(".single-contract").wrappers.map(contract => contract.text());
+      const withId = text.find(t => t.includes("with-id"));
+      const withoutId = text.find(t => t.includes("without-id"));
+      expect(withId).toContain("(Alternate ID: 3976)");
+      expect(withoutId).not.toContain("Alternate ID");
+      expect(contractByBid(wrapper, "with-id").alternate_ids).toEqual([ "3976" ]);
+    });
+  });
+
   describe("eContract Philly rows", () => {
     it("builds a title and link, and treats them as RFPs", async () => {
       const wrapper = await mountWithRows([ eContract() ]);
@@ -261,6 +299,47 @@ describe("ContractsHub", () => {
         await flushPromises();
         expect(shownBids()).toEqual([ "open" ]);
       });
+    });
+  });
+
+  describe("pagination", () => {
+    let wrapper;
+
+    beforeEach(async () => {
+      wrapper = await renderWithRows(
+        Array.from({ length: 12 }, (_, i) =>
+          phlContract({ bid_number: `bid-${i}`, estimated_amount: 1000 }),
+        ),
+      );
+    });
+
+    const shownOnPage = () => wrapper.findAll(".single-contract").length;
+
+    it("shows the first page of results", () => {
+      expect(shownOnPage()).toBe(10);
+    });
+
+    it("shows results again after a filter that matched nothing", async () => {
+      wrapper.setData({ sizes: [ "100kplus" ]});
+      await wrapper.vm.filterContracts();
+      await flushPromises();
+      expect(shownOnPage()).toBe(0);
+
+      wrapper.setData({ sizes: [ "sub34k" ]});
+      await wrapper.vm.filterContracts();
+      await flushPromises();
+      expect(shownOnPage()).toBe(10);
+    });
+
+    it("goes back to the first page when the filters change", async () => {
+      wrapper.vm.$refs.paginator.goToPage(2);
+      await flushPromises();
+      expect(shownOnPage()).toBe(2);
+
+      wrapper.setData({ sizes: [ "sub34k" ]});
+      await wrapper.vm.filterContracts();
+      await flushPromises();
+      expect(shownOnPage()).toBe(10);
     });
   });
 
