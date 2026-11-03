@@ -37,6 +37,14 @@ module.exports = {
     "vue/attributes-order": "error",
   },
   parserOptions: {
-    parser: "babel-eslint",
+    parser: "@babel/eslint-parser",
   },
+  overrides: [
+    {
+      files: [ "tests/**/*.spec.js" ],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };
